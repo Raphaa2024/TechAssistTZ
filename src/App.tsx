@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { Header } from './components/Header';
 import { LandingPage } from './components/LandingPage';
@@ -16,7 +16,8 @@ import {
   Bot, 
   User, 
   Wrench, 
-  ShieldCheck 
+  ShieldCheck,
+  LogOut
 } from 'lucide-react';
 
 const MainLayout: React.FC = () => {
@@ -28,6 +29,42 @@ const MainLayout: React.FC = () => {
     setIsMobilePreview,
     createNewTicket
   } = useApp();
+
+  // ==========================================
+  // AUTO-LOGOUT YA SUPERADMIN BAADA YA DAKIKA 1
+  // ==========================================
+  useEffect(() => {
+    // Kama hayupo kwenye chumba cha Superadmin, usifanye chochote
+    if (role !== 'tests' && role !== 'architecture') return;
+
+    let timeoutId: NodeJS.Timeout;
+
+    // Kazi ya kumtoa nje na kumrudisha Mwanzo
+    const resetTimer = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setRole('landing'); // Mtoe nje baada ya sekunde 60 za ukimya
+      }, 60000); // 60000ms = Dakika 1
+    };
+
+    // Anzisha timer mara tu anapoingia
+    resetTimer();
+
+    // Endapo atatikisa mouse, kusscroll, au kutype, timer inaanza upya!
+    window.addEventListener('mousemove', resetTimer);
+    window.addEventListener('keydown', resetTimer);
+    window.addEventListener('click', resetTimer);
+    window.addEventListener('scroll', resetTimer);
+
+    // Safisha timer akitoka kwa hiari
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('mousemove', resetTimer);
+      window.removeEventListener('keydown', resetTimer);
+      window.removeEventListener('click', resetTimer);
+      window.removeEventListener('scroll', resetTimer);
+    };
+  }, [role, setRole]);
 
   // Kitendo cha AI kuhamisha taarifa kwenda kwenye Tiketi ya Mteja
   const handleAiEscalation = (data: {
@@ -54,10 +91,9 @@ const MainLayout: React.FC = () => {
       aiTroubleshootingSummary: data.aiSummary,
     });
 
-    setRole('mteja'); // Mpeleke mteja kwenye portal yake baada ya AI kumaliza
+    setRole('mteja'); 
   };
 
-  // Sehemu inayosimamia kuonyesha ukurasa sahihi kulingana na Role
   const renderCurrentPage = () => {
     switch (role) {
       case 'landing': return <LandingPage />;
@@ -75,27 +111,40 @@ const MainLayout: React.FC = () => {
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-teal-500 selection:text-slate-950">
       <Header />
 
-      {/* SUB-BAR YA SUPERADMIN / TESTS MODE (Inaonekana tu ukiwa kwenye vipimo au architecture) */}
+      {/* SUB-BAR YA SUPERADMIN YENYE KITUFE CHA LOGOUT */}
       {(role === 'tests' || role === 'architecture') && (
-        <div className="bg-slate-900/90 border-b border-slate-800 py-2 px-4 sticky top-0 z-40 backdrop-blur-md">
+        <div className="bg-slate-900/90 border-b border-red-500/30 py-2 px-4 sticky top-0 z-40 backdrop-blur-md">
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2 text-slate-400">
-              <span className="flex h-2 w-2 rounded-full bg-teal-500 animate-pulse"></span>
-              <span className="text-slate-200 font-semibold hidden sm:inline">TechAssistTZ Live:</span>
-              <span className="truncate">Mfumo wa Usaidizi wa TEHAMA & Escrow Tanzania</span>
+            
+            <div className="flex items-center gap-2">
+              <span className="flex h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
+              <span className="text-red-400 font-black hidden sm:inline">SUPERADMIN MODE:</span>
+              <span className="truncate text-slate-400 text-[10px]">(Auto-Logout ndani ya Dk 1)</span>
             </div>
 
-            <button
-              onClick={() => setIsMobilePreview(!isMobilePreview)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
-                isMobilePreview 
-                  ? 'bg-teal-500 text-slate-950 border-teal-400 shadow-sm' 
-                  : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'
-              }`}
-            >
-              {isMobilePreview ? <Monitor className="w-3.5 h-3.5" /> : <Smartphone className="w-3.5 h-3.5" />}
-              <span>{isMobilePreview ? 'Rudi Kwenye Web' : 'Fungua Programu ya Simu'}</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsMobilePreview(!isMobilePreview)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all border ${
+                  isMobilePreview 
+                    ? 'bg-teal-500 text-slate-950 border-teal-400 shadow-sm' 
+                    : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'
+                }`}
+              >
+                {isMobilePreview ? <Monitor className="w-3.5 h-3.5" /> : <Smartphone className="w-3.5 h-3.5" />}
+                <span className="hidden sm:inline">{isMobilePreview ? 'Rudi Kwenye Web' : 'Fungua Programu ya Simu'}</span>
+              </button>
+
+              {/* KITUFE CHA SUPERADMIN LOGOUT */}
+              <button
+                onClick={() => setRole('landing')}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white shadow-sm"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Funga Mfumo</span>
+              </button>
+            </div>
+
           </div>
         </div>
       )}
@@ -103,13 +152,9 @@ const MainLayout: React.FC = () => {
       {/* ENEO KUU LA MUONEKANO (MAIN CONTENT) */}
       <main className="flex-1 pb-16">
         {isMobilePreview ? (
-          /* =========================================
-             SIMULATOR YA SIMU YA MKONONI (MOBILE VIEW)
-             ========================================= */
           <div className="py-8 flex flex-col items-center justify-center bg-slate-950 px-2 sm:px-4">
             <div className="w-full max-w-[400px] h-[820px] bg-slate-950 border-[6px] border-slate-700/90 rounded-[40px] shadow-2xl overflow-hidden flex flex-col relative ring-4 ring-slate-800/50 shadow-teal-900/20">
               
-              {/* Notch / Dynamic Island */}
               <div className="pt-2 pb-1 bg-slate-950 flex flex-col items-center shrink-0 z-30">
                 <div className="w-24 h-5 bg-slate-900 rounded-full flex items-center justify-between px-3 border border-slate-800">
                   <div className="w-2 h-2 rounded-full bg-slate-950" />
@@ -117,7 +162,6 @@ const MainLayout: React.FC = () => {
                 </div>
               </div>
 
-              {/* Status Bar */}
               <div className="px-6 py-1 text-[11px] font-bold text-slate-400 flex justify-between items-center bg-slate-950 shrink-0 select-none">
                 <span className="font-mono">12:00</span>
                 <div className="flex items-center gap-1.5 text-[10px]">
@@ -126,12 +170,10 @@ const MainLayout: React.FC = () => {
                 </div>
               </div>
 
-              {/* Ukurasa Unaoonekana Kwenye Simu */}
               <div className="flex-1 overflow-y-auto p-0 scroll-smooth bg-slate-900">
                 {renderCurrentPage()}
               </div>
 
-              {/* Bottom Navigation ya Simu (Menyu ya Chini) */}
               <div className="bg-slate-950 border-t border-slate-800 py-3 px-4 flex items-center justify-between shrink-0 z-30 pb-6">
                 {[
                   { id: 'landing', icon: <Home className="w-5 h-5" />, label: 'Mwanzo' },
@@ -155,84 +197,50 @@ const MainLayout: React.FC = () => {
             </div>
           </div>
         ) : (
-          /* =========================================
-             MUONEKANO WA KOMPYUTA (DESKTOP WEB VIEW)
-             ========================================= */
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {renderCurrentPage()}
           </div>
         )}
       </main>
 
-      {/* FOOTER YENYE TAKWIMU ZA WATEMBELEAJI NA HAKI MILIKI */}
+      {/* FOOTER */}
       <footer className="bg-slate-900 border-t border-slate-800 pt-8 pb-6 text-xs text-slate-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-6">
-          
-          {/* TAKWIMU ZA MFUMO */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-950/60 p-4 rounded-2xl border border-slate-800/80 text-center">
-            
             <div className="flex flex-col items-center justify-center p-2">
               <span className="text-slate-500 text-[11px] font-medium mb-1">👥 Waliotembelea Mfumo</span>
-              <span className="text-base sm:text-lg font-extrabold text-teal-400 font-mono tracking-wider">
-                12,480+
-              </span>
+              <span className="text-base sm:text-lg font-extrabold text-teal-400 font-mono tracking-wider">12,480+</span>
             </div>
-
             <div className="flex flex-col items-center justify-center p-2">
               <div className="flex items-center gap-1.5 mb-1">
                 <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span className="text-slate-500 text-[11px] font-medium">Waliopo Mtandaoni Sasa</span>
+                <span className="text-slate-500 text-[11px] font-medium">Waliopo Mtandaoni</span>
               </div>
-              <span className="text-base sm:text-lg font-extrabold text-emerald-400 font-mono tracking-wider">
-                142 Live
-              </span>
+              <span className="text-base sm:text-lg font-extrabold text-emerald-400 font-mono tracking-wider">142 Live</span>
             </div>
-
             <div className="flex flex-col items-center justify-center p-2">
-              <span className="text-slate-500 text-[11px] font-medium mb-1">🔧 Wataalamu Waliopo</span>
-              <span className="text-base sm:text-lg font-extrabold text-amber-400 font-mono tracking-wider">
-                {technicians.length} Wajuzi
-              </span>
+              <span className="text-slate-500 text-[11px] font-medium mb-1">🔧 Wataalamu</span>
+              <span className="text-base sm:text-lg font-extrabold text-amber-400 font-mono tracking-wider">{technicians.length} Wajuzi</span>
             </div>
-
             <div className="flex flex-col items-center justify-center p-2">
               <span className="text-slate-500 text-[11px] font-medium mb-1">🛡️ Mfumo wa Escrow</span>
-              <span className="text-xs font-bold text-teal-300 bg-teal-500/10 px-2.5 py-1 rounded-full border border-teal-500/20">
-                Upo Salama 100%
-              </span>
+              <span className="text-xs font-bold text-teal-300 bg-teal-500/10 px-2.5 py-1 rounded-full border border-teal-500/20">Salama 100%</span>
             </div>
-
           </div>
-
-          {/* TAARIFA NA HAKI MILIKI (COPYRIGHT) */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-800/60 text-center md:text-left">
-            
             <div className="flex flex-col gap-1">
               <div className="flex items-center justify-center md:justify-start gap-2">
-                <span className="text-white font-extrabold text-sm tracking-tight">
-                  Tech<span className="text-amber-400">Assist</span><span className="text-teal-400">TZ</span>
-                </span>
+                <span className="text-white font-extrabold text-sm tracking-tight">Tech<span className="text-amber-400">Assist</span><span className="text-teal-400">TZ</span></span>
                 <span className="text-slate-600">•</span>
                 <span className="text-slate-400 text-xs">Usaidizi wa TEHAMA & Escrow Tanzania</span>
               </div>
-              <p className="text-[11px] text-slate-500">
-                Mfumo wa Kitaalamu unaounganisha Wateja na Wataalamu wa TEHAMA nchi nzima.
-              </p>
+              <p className="text-[11px] text-slate-500">Mfumo wa Kitaalamu unaounganisha Wateja na Wataalamu wa TEHAMA nchi nzima.</p>
             </div>
-
-            <div className="flex flex-wrap justify-center items-center gap-2 text-[11px] font-medium text-slate-400">
-              <span className="bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700/50">🛡️ Escrow Protected</span>
-              <span className="bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700/50">🤖 AI Triage</span>
-              <span className="bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700/50">🇹🇿 Tanzania</span>
-            </div>
-
             <div className="text-[11px] text-slate-500 flex flex-col items-center md:items-end">
               <span>© {new Date().getFullYear()} TechAssistTZ. Haki zote zimehifadhiwa.</span>
               <span className="text-[10px] text-slate-600 mt-0.5">Haki Miliki na Muundo na TechAssistTZ Team</span>
             </div>
-
           </div>
-
         </div>
       </footer>
     </div>
