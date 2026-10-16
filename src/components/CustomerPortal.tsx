@@ -188,7 +188,7 @@ export const CustomerPortal: React.FC = () => {
               </span>
             </h1>
             <p className="text-xs text-slate-400">
-              Weka ombi la fundi, fuatilia safari kwa wakati halisi, na lipa kwa usalama kupitia Escrow.
+              Weka ombi la fundi, fuatilia safari kwa wakati halisi, na lipa kwa usalama kupitia SafePay.
             </p>
           </div>
         </div>
@@ -385,7 +385,7 @@ export const CustomerPortal: React.FC = () => {
                 {(currentDisplayTicket.status === 'PENDING_PAYMENT' || currentDisplayTicket.status === 'INVOICE_SENT') && (
                   <div className="bg-emerald-950/40 border border-emerald-500/40 rounded-xl p-3.5 space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-white">Ankara ya Matengenezo (Escrow)</span>
+                      <span className="text-xs font-bold text-white">Ankara ya Matengenezo (SafePay)</span>
                       <div className="text-right">
                         <span className="text-xs font-mono font-bold text-emerald-400 block">
                           TZS {currentDisplayTicket.totalAmount.toLocaleString()}
@@ -394,7 +394,7 @@ export const CustomerPortal: React.FC = () => {
                       </div>
                     </div>
                     <p className="text-[11px] text-slate-300">
-                      Fedha zinalipwa kwenye akaunti ya kampuni (Escrow) na zinakatwa 15% kwa uendeshaji; mtaalamu analipwa 85% baada ya wewe kuridhika.
+                      Fedha zinalipwa kwenye akaunti ya kampuni (SafePay) na zinakatwa 15% kwa uendeshaji; mtaalamu analipwa 85% baada ya wewe kuridhika.
                     </p>
                     
                     <div className="flex items-center gap-2">
@@ -411,7 +411,7 @@ export const CustomerPortal: React.FC = () => {
                         className="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition-colors flex items-center justify-center gap-1.5"
                       >
                         <CreditCard className="w-3.5 h-3.5" />
-                        <span>Lipa Escrow</span>
+                        <span>Lipa na SafePay</span>
                       </button>
                     </div>
                   </div>
@@ -432,7 +432,7 @@ export const CustomerPortal: React.FC = () => {
                       className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2"
                     >
                       <span>✓</span>
-                      <span>Thibitisha Kazi Imekamilika & Toa Malipo Escrow</span>
+                      <span>Thibitisha Kazi Imekamilika & Toa Malipo SafePay</span>
                     </button>
                   </div>
                 )}
@@ -702,7 +702,7 @@ export const CustomerPortal: React.FC = () => {
         onCancel={() => setWarningModalOpen(false)}
       />
 
-      {/* Escrow Payment Modal */}
+      {/* SafePay Payment Modal */}
       {currentDisplayTicket && (
         <PaymentModal
           ticket={currentDisplayTicket}

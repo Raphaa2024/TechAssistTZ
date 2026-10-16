@@ -223,7 +223,7 @@ const MainLayout: React.FC = () => {
               <span className="text-base sm:text-lg font-extrabold text-amber-400 font-mono tracking-wider">{technicians.length} Wajuzi</span>
             </div>
             <div className="flex flex-col items-center justify-center p-2">
-              <span className="text-slate-500 text-[11px] font-medium mb-1">🛡️ Mfumo wa Escrow</span>
+              <span className="text-slate-500 text-[11px] font-medium mb-1">🛡️ Mfumo wa SafePay</span>
               <span className="text-xs font-bold text-teal-300 bg-teal-500/10 px-2.5 py-1 rounded-full border border-teal-500/20">Salama 100%</span>
             </div>
           </div>
@@ -232,7 +232,7 @@ const MainLayout: React.FC = () => {
               <div className="flex items-center justify-center md:justify-start gap-2">
                 <span className="text-white font-extrabold text-sm tracking-tight">Tech<span className="text-amber-400">Assist</span><span className="text-teal-400">TZ</span></span>
                 <span className="text-slate-600">•</span>
-                <span className="text-slate-400 text-xs">Usaidizi wa TEHAMA & Escrow Tanzania</span>
+                <span className="text-slate-400 text-xs">Usaidizi wa TEHAMA & SafePay Tanzania</span>
               </div>
               <p className="text-[11px] text-slate-500">Mfumo wa Kitaalamu unaounganisha Wateja na Wataalamu wa TEHAMA nchi nzima.</p>
             </div>

@@ -199,11 +199,11 @@ export const FundiPortal: React.FC = () => {
 
             {activeJob?.status === 'COMPLETED' ? (
               <div className="bg-emerald-500/10 border border-emerald-500/30 px-4 py-2.5 rounded-2xl flex items-center gap-2 text-emerald-400 text-xs font-bold animate-pulse">
-                <span>✓</span> Fedha za Kazi hii Zimeachiwa Kutoka Escrow!
+                <span>✓</span> Fedha za Kazi hii Zimeachiwa Kutoka SafePay!
               </div>
             ) : activeJob?.paymentStatus === 'HELD_BY_COMPANY_ESCROW' ? (
               <div className="bg-amber-500/10 border border-amber-500/30 px-4 py-2.5 rounded-2xl flex items-center gap-2 text-amber-400 text-xs font-bold">
-                <span>🔒</span> Zipo Chini ya Escrow (Zitaachiwa Ukimaliza Kazi)
+                <span>🔒</span> Zinalindwa na SafePay (Zitaachiwa Ukimaliza Kazi)
               </div>
             ) : null}
           </div>
@@ -239,7 +239,7 @@ export const FundiPortal: React.FC = () => {
                       <span className="text-sm font-bold text-amber-400 font-mono">{activeJob.tokenNumber}</span>
                     </div>
                     <span className="text-xs px-2.5 py-1 rounded-full font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                      TZS {activeJob.totalAmount.toLocaleString()} (Escrow)
+                      TZS {activeJob.totalAmount.toLocaleString()} (SafePay)
                     </span>
                   </div>
 
@@ -407,7 +407,7 @@ export const FundiPortal: React.FC = () => {
                         <span>KAZI INAENDELEA KUFANYIKA</span>
                       </div>
                       <p className="text-xs text-slate-400">
-                        Baada ya kukamilisha matengenezo, mteja atathibitisha na pesa ya TZS {activeJob.totalAmount.toLocaleString()} itaachiwa kutoka Escrow kwenda kwenye akaunti yako.
+                        Baada ya kukamilisha matengenezo, mteja atathibitisha na pesa ya TZS {activeJob.totalAmount.toLocaleString()} itaachiwa kutoka SafePay kwenda kwenye akaunti yako.
                       </p>
                       <button
                         onClick={() => completeJob(activeJob.id)}

@@ -27,25 +27,23 @@ export const AdminPortal: React.FC = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('DASHBOARD');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // MAHESABU YA KIFEDHA YA ESCROW, VAT (18%) NA MAPATO YA KAMPUNI (15%)
+  // MAHESABU YA KIFEDHA YA SAFEPAY, VAT (18%) NA MAPATO YA KAMPUNI (15%)
   const financialStats = useMemo(() => {
-    let escrowHeld = 0;
+    let safePayHeld = 0;
     let platformRevenue = 0;
     let vatCollected = 0;
     let totalPayouts = 0;
 
     tickets.forEach(ticket => {
-      // Kama pesa imeshalipwa na ipo kwenye mzunguko (Escrow)
       if (['PAID_WAITING_DISPATCH', 'EN_ROUTE', 'ARRIVED', 'IN_PROGRESS'].includes(ticket.status)) {
-        escrowHeld += ticket.totalAmount;
+        safePayHeld += ticket.totalAmount;
       }
       
-      // Kama kazi imekamilika na pesa imeachiwa (Completed)
       if (ticket.status === 'COMPLETED') {
-        const vat = ticket.totalAmount - (ticket.totalAmount / 1.18); // Kutoa 18% VAT ndani ya Jumla
+        const vat = ticket.totalAmount - (ticket.totalAmount / 1.18);
         const subtotal = ticket.totalAmount - vat;
-        const platformFee = subtotal * 0.15; // 15% ya Mfumo
-        const techPayout = subtotal * 0.85; // 85% ya Fundi
+        const platformFee = subtotal * 0.15;
+        const techPayout = subtotal * 0.85;
 
         vatCollected += vat;
         platformRevenue += platformFee;
@@ -53,17 +51,14 @@ export const AdminPortal: React.FC = () => {
       }
     });
 
-    return { escrowHeld, platformRevenue, vatCollected, totalPayouts };
+    return { safePayHeld, platformRevenue, vatCollected, totalPayouts };
   }, [tickets]);
 
-  // CHUJA WATAALAMU AMBAO HAWAJATHIBITISHWA (KYC PENDING)
   const unverifiedTechs = technicians.filter(t => !t.isExpelled && t.rating === 0);
-
-  // TIKETI ZILIZOKAMILIKA KWA AJILI YA KUMBUKUMBU (RECORDS)
   const completedTickets = tickets.filter(t => t.status === 'COMPLETED');
 
   const handleVerifyTech = (techId: string) => {
-    alert(`Mtaalamu amehakikiwa na kupewa Tiki ya Kijani kikamilifu! Sasa ataonekana kwa wateja.`);
+    alert(`Mtaalamu amehakikiwa na kupewa Tiki ya Kijani kikamilifu!`);
   };
 
   const handleRejectTech = (techId: string) => {
@@ -73,14 +68,13 @@ export const AdminPortal: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 animate-in fade-in duration-300">
       
-      {/* HEADER YA ADMIN */}
       <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-2xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
             <ShieldCheck className="w-8 h-8" />
           </div>
           <div>
-            <h1 className="text-xl font-black text-white tracking-tight">Jopo la Usimamizi & Escrow</h1>
+            <h1 className="text-xl font-black text-white tracking-tight">Jopo la Usimamizi & SafePay</h1>
             <p className="text-xs text-slate-400 mt-1">
               Dhibiti wataalamu (KYC), mzunguko wa fedha, na usalama wa TechAssistTZ.
             </p>
@@ -94,7 +88,7 @@ export const AdminPortal: React.FC = () => {
               activeTab === 'DASHBOARD' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Wallet className="w-4 h-4" /> Escrow
+            <Wallet className="w-4 h-4" /> SafePay
           </button>
           <button
             onClick={() => setActiveTab('RECORDS')}
@@ -128,17 +122,15 @@ export const AdminPortal: React.FC = () => {
         </div>
       </div>
 
-      {/* ----------------- TAB: DASHBOARD & ESCROW ----------------- */}
       {activeTab === 'DASHBOARD' && (
         <div className="space-y-6">
-          {/* VIBUKU VYA FEDHA (FINANCIAL CARDS) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <ShieldCheck className="w-16 h-16 text-blue-400" />
               </div>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Fedha Kwenye Escrow</p>
-              <h3 className="text-2xl font-black text-white font-mono">TZS {financialStats.escrowHeld.toLocaleString()}</h3>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Fedha Kwenye SafePay</p>
+              <h3 className="text-2xl font-black text-white font-mono">TZS {financialStats.safePayHeld.toLocaleString()}</h3>
               <p className="text-[10px] text-blue-400 mt-2 flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" /> Zinasubiri kazi zikamilike
               </p>
@@ -174,7 +166,7 @@ export const AdminPortal: React.FC = () => {
 
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl">
             <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
-              <FileText className="w-4 h-4 text-slate-400" /> Muamala ya Hivi Karibuni ya Escrow
+              <FileText className="w-4 h-4 text-slate-400" /> Miamala ya Hivi Karibuni ya SafePay
             </h3>
             
             <div className="overflow-x-auto">
@@ -204,7 +196,7 @@ export const AdminPortal: React.FC = () => {
                           t.status === 'PENDING_PAYMENT' ? 'bg-slate-800 text-slate-400' : 
                           'bg-blue-500/10 text-blue-400 border border-blue-500/20'
                         }`}>
-                          {t.status === 'COMPLETED' ? 'Imeachiwa kwa Fundi' : t.status === 'PENDING_PAYMENT' ? 'Bado Kulipwa' : 'Imeshikiliwa (Escrow)'}
+                          {t.status === 'COMPLETED' ? 'Imeachiwa kwa Fundi' : t.status === 'PENDING_PAYMENT' ? 'Bado Kulipwa' : 'Inalindwa (SafePay)'}
                         </span>
                       </td>
                     </tr>
@@ -216,12 +208,9 @@ export const AdminPortal: React.FC = () => {
         </div>
       )}
 
-      {/* ----------------- TAB: RECORDS (RECEIPTS & PAYOUTS) ----------------- */}
       {activeTab === 'RECORDS' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
-            {/* Orodha ya Ankara za Wateja (Customer Receipts) */}
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
@@ -266,7 +255,6 @@ export const AdminPortal: React.FC = () => {
               )}
             </div>
 
-            {/* Orodha ya Malipo ya Mafundi (Technician Payouts) */}
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
@@ -316,20 +304,16 @@ export const AdminPortal: React.FC = () => {
                 </div>
               )}
             </div>
-
           </div>
         </div>
       )}
 
-
-      {/* ----------------- TAB: KYC VERIFICATION ----------------- */}
       {activeTab === 'KYC_VERIFICATION' && (
         <div className="space-y-6">
           <div className="bg-blue-950/20 border border-blue-500/30 p-4 rounded-2xl flex items-start gap-3 text-blue-200 text-xs leading-relaxed">
             <ShieldCheck className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
             <p>
-              Hapa kuna orodha ya wataalamu wapya waliojisajili. Tafadhali kagua <strong className="text-white">Picha zao za Pasipoti, Vyeti, na Uzoefu wao wa Kazi</strong>. 
-              Kuwaidhinisha kutawapa beji ya "Verified" na wataanza kuonekana kwenye ramani kwa wateja.
+              Hapa kuna orodha ya wataalamu wapya waliojisajili. Tafadhali kagua Picha zao za Pasipoti, Vyeti, na Uzoefu wao wa Kazi.
             </p>
           </div>
 
@@ -342,14 +326,10 @@ export const AdminPortal: React.FC = () => {
             ) : (
               unverifiedTechs.map(tech => (
                 <div key={tech.id} className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-xl flex flex-col">
-                  
-                  {/* Photo & Basic Info */}
+                  {/* ... KYC Details zilizopo ... */}
                   <div className="p-5 border-b border-slate-800 flex gap-4 bg-slate-950/40">
                     <div className="w-20 h-20 rounded-2xl bg-slate-800 border-2 border-slate-700 flex items-center justify-center shrink-0 overflow-hidden relative group cursor-pointer">
                       <span className="text-3xl">👨‍🔧</span>
-                      <div className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <Eye className="w-5 h-5 text-white" />
-                      </div>
                     </div>
                     <div>
                       <h3 className="font-bold text-white">{tech.name}</h3>
@@ -357,48 +337,13 @@ export const AdminPortal: React.FC = () => {
                         {tech.trade}
                       </p>
                       <p className="text-[11px] text-slate-400 mt-1.5 font-mono">{tech.phone}</p>
-                      <p className="text-[11px] text-slate-400">Kituo: {tech.currentLocation.name}</p>
                     </div>
                   </div>
-
-                  {/* KYC Details */}
-                  <div className="p-5 flex-1 space-y-4 text-xs">
-                    <div>
-                      <span className="text-slate-500 font-bold block mb-1 uppercase tracking-wider text-[10px]">Uzoefu wa Kazi</span>
-                      <p className="text-slate-300 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 line-clamp-3">
-                        Miaka 4 akifanya kazi za IT Support na ufungaji wa mifumo ya CCTV kwenye kampuni mbalimbali.
-                      </p>
-                    </div>
-
-                    <div>
-                      <span className="text-slate-500 font-bold block mb-1 uppercase tracking-wider text-[10px]">Ujuzi (Skills)</span>
-                      <div className="flex flex-wrap gap-1.5">
-                        <span className="px-2 py-1 bg-slate-800 rounded text-slate-300">Networking</span>
-                        <span className="px-2 py-1 bg-slate-800 rounded text-slate-300">CCTV Setup</span>
-                        <span className="px-2 py-1 bg-slate-800 rounded text-slate-300">Hardware Repair</span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <span className="text-slate-500 font-bold block mb-1 uppercase tracking-wider text-[10px]">Vyeti / Vielelezo</span>
-                      <button className="text-teal-400 hover:text-teal-300 font-semibold flex items-center gap-1.5">
-                        <FileText className="w-3.5 h-3.5" /> Tazama Vyeti 2 vilivyopakiwa
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
                   <div className="p-4 border-t border-slate-800 bg-slate-950 flex gap-2">
-                    <button 
-                      onClick={() => handleRejectTech(tech.id)}
-                      className="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-red-950 hover:text-red-400 text-slate-300 font-bold transition-colors flex items-center justify-center gap-1.5 border border-slate-700 hover:border-red-500/50"
-                    >
+                    <button onClick={() => handleRejectTech(tech.id)} className="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-red-950 hover:text-red-400 text-slate-300 font-bold transition-colors flex items-center justify-center gap-1.5 border border-slate-700 hover:border-red-500/50">
                       <XCircle className="w-4 h-4" /> Katalia
                     </button>
-                    <button 
-                      onClick={() => handleVerifyTech(tech.id)}
-                      className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-colors shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-1.5"
-                    >
+                    <button onClick={() => handleVerifyTech(tech.id)} className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-colors shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-1.5">
                       <CheckCircle className="w-4 h-4" /> Thibitisha
                     </button>
                   </div>
@@ -409,20 +354,15 @@ export const AdminPortal: React.FC = () => {
         </div>
       )}
 
-
-      {/* ----------------- TAB: DISPUTES ----------------- */}
       {activeTab === 'DISPUTES' && (
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center shadow-xl max-w-2xl mx-auto">
-          <div className="w-20 h-20 bg-emerald-500/10 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">
-            🎉
-          </div>
+          <div className="w-20 h-20 bg-emerald-500/10 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">🎉</div>
           <h3 className="text-lg font-black text-white mb-2">Hakuna Migogoro (Zero Disputes)</h3>
           <p className="text-slate-400 text-xs leading-relaxed">
-            Hongera! Mfumo unafanya kazi kwa ufanisi na wateja wote wameridhishwa na huduma za wataalamu. Pesa zote za Escrow zimelipwa kwa usalama bila malalamiko yoyote.
+            Hongera! Mfumo unafanya kazi kwa ufanisi. Pesa zote za SafePay zimelipwa kwa usalama bila malalamiko yoyote.
           </p>
         </div>
       )}
-
     </div>
   );
 };
