@@ -6,6 +6,7 @@ import { CannotAttendModal } from './CannotAttendModal';
 import { ChatModal } from './ChatModal';
 import { CallModal } from './CallModal';
 import { InvoiceModal } from './InvoiceModal';
+import { FundiCollabModal } from './FundiCollabModal';
 import { 
   Wrench, 
   MapPin, 
@@ -24,7 +25,8 @@ import {
   Bike,
   FileText,
   Bot,
-  Wallet
+  Wallet,
+  Users
 } from 'lucide-react';
 
 export const FundiPortal: React.FC = () => {
@@ -61,6 +63,7 @@ export const FundiPortal: React.FC = () => {
   const [invoiceOpen, setInvoiceOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [callOpen, setCallOpen] = useState(false);
+  const [collabModalOpen, setCollabModalOpen] = useState(false);
   const [reportResultAlert, setReportResultAlert] = useState<string | null>(null);
 
   const strikes = currentFundi.consecutiveMissedCalls || 0;
@@ -412,6 +415,15 @@ export const FundiPortal: React.FC = () => {
                       >
                         Kazi Imekamilika
                       </button>
+
+                      {/* TEAMWORK & CONSULTATION BUTTON */}
+                      <button
+                        onClick={() => setCollabModalOpen(true)}
+                        className="w-full mt-2 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold text-xs border border-amber-500/30 transition-all flex items-center justify-center gap-2"
+                      >
+                        <Users className="w-4 h-4" />
+                        <span>Nimekwama: Omba Msaada (10% Fee)</span>
+                      </button>
                     </div>
                   )}
 
@@ -531,6 +543,15 @@ export const FundiPortal: React.FC = () => {
               ticket={activeJob}
               isOpen={callOpen}
               onClose={() => setCallOpen(false)}
+            />
+          )}
+
+          {/* Fundi Collab Modal */}
+          {activeJob && (
+            <FundiCollabModal
+              ticket={activeJob}
+              isOpen={collabModalOpen}
+              onClose={() => setCollabModalOpen(false)}
             />
           )}
         </>
