@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { 
   Wrench, 
   User, 
   ShieldAlert, 
-  PhoneCall,
-  FlaskConical
+  PhoneCall
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -20,6 +19,19 @@ export const Header: React.FC = () => {
     logoutUser
   } = useApp();
 
+  // Njia ya siri (Secret clicks counter) ya Superadmin
+  const [clickCount, setClickCount] = useState(0);
+
+  const handleSecretSuperadminClick = () => {
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
+
+    if (newCount >= 3) {
+      setRole('tests'); // Fungua chumba cha Superadmin & Vipimo vya mfumo
+      setClickCount(0); // Weka upya kaunta
+    }
+  };
+
   const currentFundi = technicians.find((t) => t.id === activeFundiId) || technicians[0];
   const activeTicketsCount = tickets.filter(
     (t) => t.status === 'PAID_WAITING_DISPATCH' || t.status === 'EN_ROUTE' || t.status === 'ARRIVED' || t.status === 'IN_PROGRESS'
@@ -29,9 +41,10 @@ export const Header: React.FC = () => {
     <header className="bg-slate-900/95 border-b border-slate-800 text-white sticky top-0 z-50 shadow-2xl backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col items-center justify-center gap-3">
         
-        {/* LOGO YA SPANA NA JINA - CENTERED JUU KATIKATI */}
+        {/* LOGO YA SPANA NA JINA - CENTERED JUU KATIKATI (Bonus: Secret Click kwa Superadmin) */}
         <div 
-          onClick={() => setRole('landing')}
+          onClick={handleSecretSuperadminClick}
+          title="TechAssistTZ"
           className="flex flex-col items-center justify-center cursor-pointer group py-0.5 select-none"
         >
           <div className="bg-gradient-to-tr from-amber-500 via-teal-500 to-emerald-400 p-2.5 rounded-2xl shadow-lg shadow-teal-500/25 group-hover:scale-110 transition-all duration-300 mb-1 border border-teal-400/30">
@@ -42,14 +55,14 @@ export const Header: React.FC = () => {
           </span>
         </div>
 
-        {/* MENYU YA CHINI YA LOGO */}
+        {/* MENYU YA CHINI YA LOGO (Ipo Safi Bila Superadmin Kuonekana) */}
         <div className="w-full flex flex-wrap items-center justify-between gap-3">
           
           {/* Navigation Buttons */}
           <div className="flex flex-wrap items-center justify-center gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl border border-slate-800/80 shadow-inner mx-auto">
             <button
               onClick={() => setRole('landing')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'landing'
                   ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30 font-bold scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -61,7 +74,7 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setRole('ai_chat')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'ai_chat'
                   ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30 ring-1 ring-purple-400 font-bold scale-[1.02]'
                   : 'text-purple-300 hover:text-white hover:bg-slate-800/60 bg-purple-950/30 border border-purple-500/30'
@@ -73,7 +86,7 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setRole('mteja')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'mteja'
                   ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 ring-1 ring-emerald-400/40 font-bold scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -85,7 +98,7 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setRole('fundi')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'fundi'
                   ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30 font-bold scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -104,7 +117,7 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setRole('admin')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'admin'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-1 ring-blue-400/40 font-bold scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -117,20 +130,6 @@ export const Header: React.FC = () => {
                   {activeTicketsCount}
                 </span>
               )}
-            </button>
-
-            {/* CHUMBA CHA SUPERADMIN / TESTS */}
-            <button
-              onClick={() => setRole('tests')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 ${
-                role === 'tests'
-                  ? 'bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-400/40 font-black ring-2 ring-emerald-200 scale-[1.02]'
-                  : 'text-slate-400 hover:text-emerald-300 hover:bg-slate-800/60'
-              }`}
-              title="Superadmin System Diagnostics"
-            >
-              <FlaskConical className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Superadmin</span>
             </button>
           </div>
 
