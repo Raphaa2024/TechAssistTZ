@@ -45,25 +45,28 @@ export const Header: React.FC = () => {
 
   return (
     <header className="bg-slate-900/95 border-b border-slate-800 text-white sticky top-0 z-50 shadow-2xl backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5">
-        <div className="flex items-center justify-between gap-4">
-          
-          {/* LOGO YA SPANA NA JINA (KUSHOTO) */}
-          <div 
-            onClick={handleSecretSuperadminClick}
-            title="TechAssistTZ"
-            className="flex items-center gap-2.5 cursor-pointer group select-none shrink-0"
-          >
-            <div className="bg-gradient-to-tr from-amber-500 via-teal-500 to-emerald-400 p-2 rounded-xl shadow-lg shadow-teal-500/20 group-hover:scale-105 transition-all duration-300 border border-teal-400/30">
-              <Wrench className="w-4 h-4 sm:w-5 sm:h-5 text-slate-950 font-black" />
-            </div>
-            <span className="text-lg sm:text-2xl font-black text-white tracking-tight group-hover:text-teal-400 transition-colors leading-none">
-              Tech<span className="text-amber-400">Assist</span><span className="text-teal-400">TZ</span>
-            </span>
+      {/* flex-col kwenye simu (md:flex-row kwenye PC) inaruhusu logo kukaa juu katikati kwa simu */}
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-2.5 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4">
+        
+        {/* LOGO YA SPANA NA JINA (Katikati kwenye simu, Kushoto kwenye PC) */}
+        <div 
+          onClick={handleSecretSuperadminClick}
+          title="TechAssistTZ"
+          className="flex items-center gap-2 cursor-pointer group select-none shrink-0"
+        >
+          <div className="bg-gradient-to-tr from-amber-500 via-teal-500 to-emerald-400 p-2 rounded-xl shadow-lg shadow-teal-500/20 group-hover:scale-105 transition-all duration-300 border border-teal-400/30">
+            <Wrench className="w-4 h-4 sm:w-5 sm:h-5 text-slate-950 font-black" />
           </div>
+          <span className="text-lg sm:text-2xl font-black text-white tracking-tight group-hover:text-teal-400 transition-colors leading-none">
+            Tech<span className="text-amber-400">Assist</span><span className="text-teal-400">TZ</span>
+          </span>
+        </div>
 
-          {/* MENYU YA KATIKATI (NAVIGATION BUTTONS) */}
-          <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/80 p-1 sm:p-1.5 rounded-2xl border border-slate-800/80 shadow-inner">
+        {/* ENEO LA MENYU NA USER PROFILE (Wrap vizuri kwenye simu) */}
+        <div className="flex flex-wrap items-center justify-center gap-2.5 md:gap-4 w-full md:w-auto">
+          
+          {/* MENYU (NAVIGATION BUTTONS) */}
+          <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5 bg-slate-950/80 p-1 sm:p-1.5 rounded-2xl border border-slate-800/80 shadow-inner">
             <button
               onClick={() => setRole('landing')}
               className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
@@ -136,8 +139,8 @@ export const Header: React.FC = () => {
             )}
           </div>
 
-          {/* TAARIFA ZA USER SESSION AU KITUFE CHA MSAADA (KULIA) */}
-          <div className="shrink-0">
+          {/* TAARIFA ZA USER SESSION AU KITUFE CHA MSAADA */}
+          <div className="shrink-0 flex justify-center">
             {currentUserSession ? (
               <div className="flex items-center gap-2 bg-slate-800/90 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-700 shadow-sm">
                 <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-amber-500/20 to-emerald-500/20 border border-emerald-500/40 text-emerald-300 flex items-center justify-center text-xs font-black shrink-0">
@@ -166,10 +169,10 @@ export const Header: React.FC = () => {
             ) : (
               <button 
                 onClick={() => setRole('ai_chat')}
-                className="flex items-center gap-1.5 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs px-3.5 py-2 rounded-xl shadow-md shadow-teal-500/10 hover:shadow-teal-500/25 transition-all duration-200 active:scale-95"
+                className="flex items-center gap-1.5 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl shadow-md shadow-teal-500/10 hover:shadow-teal-500/25 transition-all duration-200 active:scale-95"
               >
                 <PhoneCall className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Pata Msaada</span>
+                <span className="inline">Pata Msaada</span>
               </button>
             )}
           </div>
