@@ -4,9 +4,7 @@ import {
   Wrench, 
   User, 
   ShieldAlert, 
-  RotateCcw, 
-  FlaskConical,
-  FolderTree
+  PhoneCall
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -17,7 +15,6 @@ export const Header: React.FC = () => {
     setActiveFundiId, 
     technicians, 
     tickets, 
-    resetDemoData,
     currentUserSession,
     logoutUser
   } = useApp();
@@ -36,33 +33,22 @@ export const Header: React.FC = () => {
           <div className="flex items-center justify-between">
             <div 
               onClick={() => setRole('landing')}
-              className="flex flex-col items-center justify-center cursor-pointer group py-1 select-none"
+              className="flex items-center gap-3 cursor-pointer group py-1 select-none"
             >
-              <div className="bg-gradient-to-tr from-amber-500 via-teal-500 to-emerald-400 p-2.5 rounded-2xl shadow-lg shadow-teal-500/20 group-hover:scale-110 group-hover:shadow-teal-500/40 transition-all duration-300 mb-1 border border-teal-400/30">
-                <Wrench className="w-6 h-6 text-slate-950 font-black" />
+              <div className="bg-gradient-to-tr from-amber-500 via-teal-500 to-emerald-400 p-2.5 rounded-xl shadow-lg shadow-teal-500/20 group-hover:scale-105 transition-all duration-300 border border-teal-400/30">
+                <Wrench className="w-5 h-5 text-slate-950 font-black" />
               </div>
               <span className="text-xl md:text-2xl font-black text-white tracking-tight group-hover:text-teal-400 transition-colors leading-none">
                 Tech<span className="text-amber-400">Assist</span><span className="text-teal-400">TZ</span>
               </span>
             </div>
-
-            {/* Mobile Reset Button */}
-            <div className="flex md:hidden items-center gap-2">
-              <button
-                onClick={resetDemoData}
-                title="Weka upya mfumo"
-                className="p-2 rounded-xl bg-slate-800/80 text-slate-400 hover:text-white border border-slate-700 active:scale-95 transition-all"
-              >
-                <RotateCcw className="w-4 h-4" />
-              </button>
-            </div>
           </div>
 
-          {/* Role Navigation Bar */}
+          {/* Role Navigation Bar (Yenye Menyu za Kawaida Tu) */}
           <div className="flex flex-wrap items-center justify-center gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl border border-slate-800/80 shadow-inner">
             <button
               onClick={() => setRole('landing')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'landing'
                   ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30 font-bold scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -74,7 +60,7 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setRole('ai_chat')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'ai_chat'
                   ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30 ring-1 ring-purple-400 font-bold scale-[1.02]'
                   : 'text-purple-300 hover:text-white hover:bg-slate-800/60 bg-purple-950/30 border border-purple-500/30'
@@ -86,7 +72,7 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setRole('mteja')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'mteja'
                   ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 ring-1 ring-emerald-400/40 font-bold scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -98,7 +84,7 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setRole('fundi')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'fundi'
                   ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30 font-bold scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -117,7 +103,7 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setRole('admin')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'admin'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-1 ring-blue-400/40 font-bold scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -131,34 +117,9 @@ export const Header: React.FC = () => {
                 </span>
               )}
             </button>
-
-            <button
-              onClick={() => setRole('tests')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 relative ${
-                role === 'tests'
-                  ? 'bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-400/40 font-black ring-2 ring-emerald-200 scale-[1.02]'
-                  : 'text-emerald-300 hover:text-white bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-500/50 shadow-sm'
-              }`}
-              title="Fungua Dashibodi ya Majaribio"
-            >
-              <FlaskConical className="w-3.5 h-3.5" />
-              <span>🧪 PIMA MFUMO</span>
-            </button>
-
-            <button
-              onClick={() => setRole('architecture')}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
-                role === 'architecture'
-                  ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30 ring-1 ring-purple-400/40 scale-[1.02]'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-              }`}
-              title="C:\wamp64\www\TechAssistTZ"
-            >
-              <FolderTree className="w-3.5 h-3.5 text-purple-400" />
-            </button>
           </div>
 
-          {/* User Session / Fundi Selector / Actions */}
+          {/* User Session & Fundi Selector Only */}
           <div className="flex items-center justify-end gap-3">
             {role === 'fundi' && (
               <div className="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700">
@@ -177,7 +138,7 @@ export const Header: React.FC = () => {
               </div>
             )}
 
-            {currentUserSession && (
+            {currentUserSession ? (
               <div className="flex items-center gap-2 bg-slate-800/90 px-3 py-1.5 rounded-xl border border-slate-700 shadow-sm">
                 <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-amber-500/20 to-emerald-500/20 border border-emerald-500/40 text-emerald-300 flex items-center justify-center text-xs font-black">
                   {currentUserSession.name.charAt(0).toUpperCase()}
@@ -198,16 +159,15 @@ export const Header: React.FC = () => {
                   Toka
                 </button>
               </div>
+            ) : (
+              <button 
+                onClick={() => setRole('ai_chat')}
+                className="hidden md:flex items-center gap-2 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl shadow-md shadow-teal-500/10 hover:shadow-teal-500/25 transition-all duration-200 active:scale-95"
+              >
+                <PhoneCall className="w-3.5 h-3.5" />
+                <span>Pata Msaada</span>
+              </button>
             )}
-
-            <button
-              onClick={resetDemoData}
-              title="Rejesha mfumo katika hali ya awali ya majaribio"
-              className="hidden md:flex items-center gap-1.5 px-3 py-2 text-xs text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition-all border border-slate-700 active:scale-95"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Weka Upya</span>
-            </button>
           </div>
 
         </div>
