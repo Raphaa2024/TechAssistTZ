@@ -12,7 +12,6 @@ import { WARDS } from './data/mockData';
 import { 
   Monitor, 
   Smartphone, 
-  FlaskConical, 
   Home, 
   Bot, 
   User, 
@@ -76,28 +75,30 @@ const MainLayout: React.FC = () => {
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-teal-500 selection:text-slate-950">
       <Header />
 
-      {/* SUB-BAR YA JUU: Kudhibiti Simulator ya Simu */}
-      <div className="bg-slate-900/60 border-b border-slate-800/60 py-2 px-4 sticky top-0 z-40 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2 text-slate-400">
-            <span className="flex h-2 w-2 rounded-full bg-teal-500 animate-pulse"></span>
-            <span className="text-slate-200 font-semibold hidden sm:inline">TechAssistTZ Live:</span>
-            <span className="truncate">Mfumo wa Usaidizi wa TEHAMA & Escrow Tanzania</span>
-          </div>
+      {/* SUB-BAR YA SUPERADMIN / TESTS MODE (Inaonekana tu ukiwa kwenye vipimo au architecture) */}
+      {(role === 'tests' || role === 'architecture') && (
+        <div className="bg-slate-900/90 border-b border-slate-800 py-2 px-4 sticky top-0 z-40 backdrop-blur-md">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2 text-slate-400">
+              <span className="flex h-2 w-2 rounded-full bg-teal-500 animate-pulse"></span>
+              <span className="text-slate-200 font-semibold hidden sm:inline">TechAssistTZ Live:</span>
+              <span className="truncate">Mfumo wa Usaidizi wa TEHAMA & Escrow Tanzania</span>
+            </div>
 
-          <button
-            onClick={() => setIsMobilePreview(!isMobilePreview)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
-              isMobilePreview 
-                ? 'bg-teal-500 text-slate-950 border-teal-400 shadow-sm' 
-                : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'
-            }`}
-          >
-            {isMobilePreview ? <Monitor className="w-3.5 h-3.5" /> : <Smartphone className="w-3.5 h-3.5" />}
-            <span>{isMobilePreview ? 'Rudi Kwenye Web' : 'Fungua Programu ya Simu'}</span>
-          </button>
+            <button
+              onClick={() => setIsMobilePreview(!isMobilePreview)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
+                isMobilePreview 
+                  ? 'bg-teal-500 text-slate-950 border-teal-400 shadow-sm' 
+                  : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'
+              }`}
+            >
+              {isMobilePreview ? <Monitor className="w-3.5 h-3.5" /> : <Smartphone className="w-3.5 h-3.5" />}
+              <span>{isMobilePreview ? 'Rudi Kwenye Web' : 'Fungua Programu ya Simu'}</span>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ENEO KUU LA MUONEKANO (MAIN CONTENT) */}
       <main className="flex-1 pb-16">
@@ -162,17 +163,6 @@ const MainLayout: React.FC = () => {
           </div>
         )}
       </main>
-
-      {/* KITUFE KINACHOELEA KWA AJILI YA MAJARIBIO (FLOATING BUTTON) */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <button
-          onClick={() => setRole('tests')}
-          className="flex items-center gap-2 px-4 py-3 rounded-full bg-slate-800 hover:bg-slate-700 text-teal-400 font-bold text-xs shadow-2xl border border-teal-500/30 transition-all hover:scale-105"
-        >
-          <FlaskConical className="w-4 h-4" />
-          <span className="hidden sm:inline">PIMA MFUMO (TESTS)</span>
-        </button>
-      </div>
 
       {/* FOOTER */}
       <footer className="bg-slate-900 border-t border-slate-800 py-6 text-center text-xs text-slate-500">
