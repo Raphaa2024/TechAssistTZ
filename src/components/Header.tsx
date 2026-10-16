@@ -5,7 +5,8 @@ import {
   User, 
   ShieldAlert, 
   PhoneCall,
-  LogOut
+  LogOut,
+  Lock
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -17,16 +18,34 @@ export const Header: React.FC = () => {
     logoutUser
   } = useApp();
 
-  // Njia ya siri ya Superadmin (Triple click kwenye logo)
+  // State za Superadmin Login
   const [clickCount, setClickCount] = useState(0);
+  const [showSuperAdminLogin, setShowSuperAdminLogin] = useState(false);
+  const [superAdminPass, setSuperAdminPass] = useState('');
+  const [superAdminError, setSuperAdminError] = useState('');
 
+  // Kitendo cha kubonyeza mara 3
   const handleSecretSuperadminClick = () => {
     const newCount = clickCount + 1;
     setClickCount(newCount);
 
     if (newCount >= 3) {
-      setRole('tests'); // Fungua chumba cha Superadmin & Vipimo vya mfumo
+      setShowSuperAdminLogin(true); // Fungua fomu badala ya kumpeleka moja kwa moja
       setClickCount(0); // Weka upya kaunta
+    }
+  };
+
+  // Kitendo cha kuwasilisha nenosiri la Superadmin
+  const handleSuperAdminSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // NENOSIRI LA SIRI LA SUPERADMIN (Unaweza kubadili hapa)
+    if (superAdminPass === 'superadmin123') {
+      setRole('tests'); // Fungua chumba cha Superadmin
+      setShowSuperAdminLogin(false);
+      setSuperAdminPass('');
+      setSuperAdminError('');
+    } else {
+      setSuperAdminError('Nenosiri si sahihi! Hauruhusiwi kuingia hapa.');
     }
   };
 
@@ -35,7 +54,7 @@ export const Header: React.FC = () => {
     if (currentUserSession && currentUserSession.role === 'mteja') {
       setRole('mteja');
     } else {
-      setRole('landing'); // Mpeleke kwenye Landing Page ili achague kategoria na kuingia kwanza
+      setRole('landing');
     }
   };
 
@@ -44,7 +63,7 @@ export const Header: React.FC = () => {
     if (currentUserSession && currentUserSession.role === 'fundi') {
       setRole('fundi');
     } else {
-      setRole('landing'); // Mpeleke kwenye Landing Page ili achague kundi la Watoa Huduma na kuingia
+      setRole('landing');
     }
   };
 
@@ -54,11 +73,6 @@ export const Header: React.FC = () => {
 
   return (
     <header className="bg-slate-900/95 border-b border-slate-800 text-white sticky top-0 z-50 shadow-2xl backdrop-blur-md">
-      {/* 
-        MABADILIKO YA ALIGNMENT: 
-        - Kwenye simu (flex-col, justify-between)
-        - Kwenye PC/Website (md:flex-row, md:justify-center, md:gap-12) ili vitu vyote vikae katikati!
-      */}
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-2.5 flex flex-col md:flex-row items-center justify-between md:justify-center gap-3 md:gap-12">
         
         {/* LOGO YA SPANA NA JINA */}
@@ -104,7 +118,6 @@ export const Header: React.FC = () => {
               <span>🤖 AI Uchunguzi</span>
             </button>
 
-            {/* KITUFE CHA MTEJA (Active na Kinaelekeza kwenye Login/Kategoria) */}
             <button
               onClick={handleCustomerNavigation}
               className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
@@ -117,7 +130,6 @@ export const Header: React.FC = () => {
               <span>Mteja</span>
             </button>
 
-            {/* KITUFE CHA MTAALAMU (Active na Kinaelekeza kwenye Login/Kategoria) */}
             <button
               onClick={handleFundiNavigation}
               className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
@@ -130,7 +142,6 @@ export const Header: React.FC = () => {
               <span>Mtaalamu</span>
             </button>
 
-            {/* Kitufe cha Admin & Escrow (Kinaonekana TU kama admin amelogin) */}
             {currentUserSession && currentUserSession.role === 'admin' && (
               <button
                 onClick={() => setRole('admin')}
@@ -191,6 +202,55 @@ export const Header: React.FC = () => {
 
         </div>
       </div>
+
+      {/* FOMU YA LOGIN YA SUPERADMIN INAYOTOKEA UKIBONYEZA MARA 3 */}
+      {showSuperAdminLogin && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+          <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-2xl max-w-xs w-full animate-in zoom-in-95">
+            <div className="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
+              <h3 className="text-teal-400 font-black text-sm flex items-center gap-2 uppercase tracking-wider">
+                <ShieldAlert className="w-5 h-5" />
+                <span>Superadmin</span>
+              </h3>
+              <button 
+                onClick={() => {
+                  setShowSuperAdminLogin(false);
+                  setSuperAdminError('');
+                }} 
+                className="text-slate-500 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+            <form onSubmit={handleSuperAdminSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-400 mb-2">Nenosiri la Siri</label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+                  <input 
+                    type="password" 
+                    autoFocus
+                    required
+                    value={superAdminPass}
+                    onChange={(e) => setSuperAdminPass(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-white text-xs focus:border-teal-500 focus:outline-none"
+                    placeholder="Weka nenosiri..."
+                  />
+                </div>
+                {superAdminError && (
+                  <p className="text-red-400 text-[10px] mt-1.5 font-bold bg-red-950/30 p-1.5 rounded">{superAdminError}</p>
+                )}
+              </div>
+              <button 
+                type="submit" 
+                className="w-full bg-teal-500 hover:bg-teal-400 text-slate-950 font-black py-2.5 rounded-xl text-xs transition-colors shadow-lg shadow-teal-500/20"
+              >
+                Fungua Mfumo
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
