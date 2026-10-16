@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { WARDS } from '../data/mockData'; // Tunaleta list ya maeneo kwa ajili ya Tracking
+import { WARDS } from '../data/mockData'; 
 import { 
   User, 
   Lock, 
@@ -12,7 +12,8 @@ import {
   ShieldCheck, 
   CheckCircle,
   Mail,
-  MapPin
+  MapPin,
+  Briefcase // Tumeongeza icon ya mkoba wa kazi
 } from 'lucide-react';
 
 interface AuthModalProps {
@@ -29,11 +30,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    email: '', // Email (Hiari)
+    email: '', 
     password: '',
-    location: WARDS[0].name, // Eneo analotokea (Muhimu kwa Live Tracking)
+    location: WARDS[0].name, 
     tradeCategory: 'Kompyuta & Laptop',
     godGivenSkills: '', 
+    workExperience: '', // TUMEONGEZA HAPA UZOEFU WA KAZI
     certificates: [] as File[],
   });
 
@@ -54,7 +56,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
       category: isFundi ? `Fundi: ${formData.tradeCategory}` : (categoryName || 'Mteja Binafsi'),
       phone: formData.phone || '+255 700 000 000',
       role: isFundi ? 'fundi' : (role === 'ADMIN' ? 'admin' : 'mteja'),
-      wardName: formData.location // Hii ndio itasaidia mteja kuona tracking kuanzia hapa
+      wardName: formData.location 
     });
 
     onLoginComplete();
@@ -102,7 +104,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
         </button>
       </div>
 
-      {/* FOMU KUU (COMMON FORM STYLE) */}
+      {/* FOMU KUU */}
       <form onSubmit={handleSubmit} className="space-y-4 text-xs">
         
         {/* Jina Kamili */}
@@ -211,6 +213,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
                 </select>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* UZOEFU WA KAZI (Work Experience) */}
+        {isRegistering && isFundi && (
+          <div className="bg-blue-950/20 border border-blue-500/30 p-3.5 rounded-2xl space-y-2 mt-2">
+            <label className="block font-bold text-blue-300 flex items-center gap-1.5">
+              <Briefcase className="w-4 h-4 text-blue-400" />
+              <span>Uzoefu wa Kazi (Work Experience)</span>
+            </label>
+            <textarea
+              rows={2}
+              placeholder="Mfano: Miaka 3 kama IT Support, Nimesimamia network za ofisi za serikali, n.k..."
+              value={formData.workExperience}
+              onChange={(e) => setFormData({ ...formData, workExperience: e.target.value })}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-blue-400 transition-colors"
+            />
           </div>
         )}
 
