@@ -54,10 +54,14 @@ export const Header: React.FC = () => {
 
   return (
     <header className="bg-slate-900/95 border-b border-slate-800 text-white sticky top-0 z-50 shadow-2xl backdrop-blur-md">
-      {/* flex-col kwenye simu (md:flex-row kwenye PC) inaruhusu logo kukaa juu katikati kwa simu */}
-      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-2.5 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4">
+      {/* 
+        MABADILIKO YA ALIGNMENT: 
+        - Kwenye simu (flex-col, justify-between)
+        - Kwenye PC/Website (md:flex-row, md:justify-center, md:gap-12) ili vitu vyote vikae katikati!
+      */}
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-2.5 flex flex-col md:flex-row items-center justify-between md:justify-center gap-3 md:gap-12">
         
-        {/* LOGO YA SPANA NA JINA (Katikati kwenye simu, Kushoto kwenye PC) */}
+        {/* LOGO YA SPANA NA JINA */}
         <div 
           onClick={handleSecretSuperadminClick}
           title="TechAssistTZ"
@@ -71,8 +75,8 @@ export const Header: React.FC = () => {
           </span>
         </div>
 
-        {/* ENEO LA MENYU NA USER PROFILE (Wrap vizuri kwenye simu) */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5 md:gap-4 w-full md:w-auto">
+        {/* ENEO LA MENYU NA USER PROFILE */}
+        <div className="flex flex-wrap items-center justify-center gap-2.5 md:gap-6 w-full md:w-auto">
           
           {/* MENYU (NAVIGATION BUTTONS) */}
           <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5 bg-slate-950/80 p-1 sm:p-1.5 rounded-2xl border border-slate-800/80 shadow-inner">
@@ -100,6 +104,7 @@ export const Header: React.FC = () => {
               <span>🤖 AI Uchunguzi</span>
             </button>
 
+            {/* KITUFE CHA MTEJA (Active na Kinaelekeza kwenye Login/Kategoria) */}
             <button
               onClick={handleCustomerNavigation}
               className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
@@ -112,7 +117,7 @@ export const Header: React.FC = () => {
               <span>Mteja</span>
             </button>
 
-            {/* Kitufe cha Mtaalamu / Fundi Kimerudishwa muda wote */}
+            {/* KITUFE CHA MTAALAMU (Active na Kinaelekeza kwenye Login/Kategoria) */}
             <button
               onClick={handleFundiNavigation}
               className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
@@ -125,7 +130,7 @@ export const Header: React.FC = () => {
               <span>Mtaalamu</span>
             </button>
 
-            {/* Kitufe cha Admin & Escrow (Kinaonekana TU kama admin amelogin ili kuficha usimamizi) */}
+            {/* Kitufe cha Admin & Escrow (Kinaonekana TU kama admin amelogin) */}
             {currentUserSession && currentUserSession.role === 'admin' && (
               <button
                 onClick={() => setRole('admin')}
