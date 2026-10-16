@@ -25,6 +25,21 @@ interface AuthModalProps {
   onLoginComplete: () => void;
 }
 
+// Orodha ya ujuzi uliozoeleka kwa wataalamu wa TEHAMA
+const PREDEFINED_SKILLS = [
+  'Hardware Repair',
+  'Software Installation',
+  'Networking & LAN',
+  'CCTV & Security',
+  'Micro-soldering',
+  'Printer Maintenance',
+  'Data Recovery',
+  'Server Administration',
+  'Web/App Development',
+  'Mobile Flashing/Repair',
+  'Nyinginezo'
+];
+
 export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLoginComplete }) => {
   const [isRegistering, setIsRegistering] = useState(false);
   const isFundi = role === 'FUNDI';
@@ -39,11 +54,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
     tradeCategory: 'Kompyuta & Laptop',
     godGivenSkills: '', 
     workExperience: '', 
-    skills: '', // Ujuzi (Skills)
-    pastProjects: '', // Kazi/Miradi iliyofanikiwa (Portfolio)
-    passportPhoto: null as File | null, // Picha ya Mtaalamu
+    pastProjects: '', 
+    passportPhoto: null as File | null, 
     certificates: [] as File[],
   });
+
+  // State maalum kwa ajili ya Ujuzi (Skills)
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [customSkill, setCustomSkill] = useState('');
 
   const { setCurrentUserSession } = useApp();
 
@@ -59,10 +77,24 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
     }
   };
 
+  // Kazi ya kubadili uchaguzi wa ujuzi
+  const toggleSkill = (skill: string) => {
+    setSelectedSkills(prev => 
+      prev.includes(skill) ? prev.filter(s => s !== skill) : [...prev, skill]
+    );
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Hifadhi taarifa za mtumiaji kwenye session (kwa sasa kama mfano)
+    // Unganisha ujuzi uliochaguliwa na ule ulioandikwa kwa mkono (kama Nyinginezo imechaguliwa)
+    const finalSkillsList = selectedSkills.filter(s => s !== 'Nyinginezo');
+    if (selectedSkills.includes('Nyinginezo') && customSkill.trim() !== '') {
+      finalSkillsList.push(customSkill.trim());
+    }
+    const finalSkillsString = finalSkillsList.join(', ');
+    
+    // Hifadhi taarifa za mtumiaji kwenye session
     setCurrentUserSession({
       name: formData.name || (isRegistering ? (isFundi ? 'Mtaalamu Mpya' : 'Mteja Mpya') : 'Mtumiaji'),
       category: isFundi ? `Fundi: ${formData.tradeCategory}` : (categoryName || 'Mteja Binafsi'),
@@ -253,20 +285,40 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
           </div>
         )}
 
-        {/* UJUZI / SKILLS */}
+        {/* UJUZI / SKILLS (Pills UI + Others Input) */}
         {isRegistering && isFundi && (
           <div>
-            <label className="block font-bold text-slate-300 mb-1">Orodha ya Ujuzi Wako (Skills)</label>
-            <div className="relative">
-              <Award className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
-              <input
-                type="text"
-                placeholder="Mfano: Networking, Micro-soldering, Python, CCTV Installation..."
-                value={formData.skills}
-                onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 transition-colors"
-              />
+            <label className="block font-bold text-slate-300 mb-2">Chagua Ujuzi Wako (Skills)</label>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {PREDEFINED_SKILLS.map((skill) => (
+                <button
+                  key={skill}
+                  type="button"
+                  onClick={() => toggleSkill(skill)}
+                  className={`px-3 py-1.5 rounded-xl text-[10px] font-bold transition-all border ${
+                    selectedSkills.includes(skill)
+                      ? 'bg-teal-500/20 text-teal-300 border-teal-500/50 shadow-sm'
+                      : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700 hover:bg-slate-900'
+                  }`}
+                >
+                  {skill}
+                </button>
+              ))}
             </div>
+            
+            {/* Input ya Nyinginezo inatokea tu kama mtu kachagua "Nyinginezo" */}
+            {selectedSkills.includes('Nyinginezo') && (
+              <div className="relative mt-3 animate-in fade-in slide-in-from-top-1">
+                <Award className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+                <input
+                  type="text"
+                  placeholder="Taja ujuzi mwingine hapa (Mfano: Graphic Design, POS Systems...)"
+                  value={customSkill}
+                  onChange={(e) => setCustomSkill(e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-teal-500 transition-colors"
+                />
+              </div>
+            )}
           </div>
         )}
 
@@ -303,6 +355,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
               value={formData.pastProjects}
               onChange={(e) => setFormData({ ...formData, pastProjects: e.target.value })}
               className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-emerald-400 transition-colors"
+            />
+          </div>
+        )}
+
+        {/* Ujuzi wa Kipaji (God-given Skills) */}
+        {isRegistering && isFundi && (
+          <div className="bg-amber-950/20 border border-amber-500/30 p-3.5 rounded-2xl space-y-2 mt-2">
+            <label className="block font-bold text-amber-300 flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              <span>Kipaji / Ujuzi Usio na Cheti (God-given Talent)</span>
+            </label>
+            <textarea
+              rows={2}
+              placeholder="Mfano: Nina uwezo mkubwa wa kufanya Micro-soldering ya Motherboard bila hata kwenda darasani..."
+              value={formData.godGivenSkills}
+              onChange={(e) => setFormData({ ...formData, godGivenSkills: e.target.value })}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-400 transition-colors"
             />
           </div>
         )}
