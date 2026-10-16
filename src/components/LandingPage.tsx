@@ -20,7 +20,7 @@ export function LandingPage() {
   const handleLoginComplete = () => {
     if (selectedRole === 'FUNDI') setRole('fundi');
     else if (selectedRole === 'ADMIN') setRole('admin');
-    else setRole('mteja'); // Kategoria zote zingine ni Wateja
+    else setRole('mteja');
   };
 
   const handleSelect = (roleId: string, name: string) => {
@@ -28,7 +28,6 @@ export function LandingPage() {
     setSelectedCategoryName(name);
   };
 
-  // Orodha ya Wateja (Taasisi na Raia)
   const customerCategories = [
     { id: 'CUSTOMER_CHUO', name: 'Vyuo & Taasisi', icon: <Landmark className="w-5 h-5 sm:w-6 sm:h-6" />, desc: 'Vyuo vikuu, VETA, na Taasisi' },
     { id: 'CUSTOMER_SHULE', name: 'Mashule', icon: <BookOpen className="w-5 h-5 sm:w-6 sm:h-6" />, desc: 'Shule za Msingi na Sekondari' },
@@ -37,25 +36,17 @@ export function LandingPage() {
     { id: 'CUSTOMER_BINAFSI', name: 'Watu Binafsi', icon: <Users className="w-5 h-5 sm:w-6 sm:h-6" />, desc: 'Msaada wa majumbani na raia' },
   ];
 
-  // Orodha ya Wataalamu na Admin
   const staffCategories = [
     { id: 'FUNDI', name: 'Mtaalamu (Fundi)', icon: <Wrench className="w-5 h-5 sm:w-6 sm:h-6" />, desc: 'Wahandisi na Mafundi wa TEHAMA' },
     { id: 'ADMIN', name: 'Msimamizi (Admin)', icon: <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" />, desc: 'Usimamizi wa Mfumo na Escrow' },
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center py-6 sm:py-12 px-3 sm:px-6 animate-in fade-in duration-500 max-w-7xl mx-auto">
+    <div className="flex flex-col items-center justify-center py-6 sm:py-10 px-3 sm:px-6 animate-in fade-in duration-500 max-w-7xl mx-auto">
       
-      {/* SEHEMU YA LOGO NA MAANDISHI (HERO SECTION) */}
+      {/* HERO SECTION - Single Clean Title */}
       <div className="text-center mb-8 sm:mb-12 max-w-3xl flex flex-col items-center w-full">
-        
-        {/* ICON YA SPANA JUU KATIKATI YA JINA */}
-        <div className="bg-gradient-to-tr from-amber-500 via-teal-500 to-emerald-400 p-3 sm:p-4 rounded-2xl sm:rounded-3xl shadow-xl shadow-teal-500/20 mb-3 sm:mb-4 border border-teal-400/30 hover:scale-105 transition-transform duration-300">
-          <Wrench className="w-7 h-7 sm:w-10 sm:h-10 text-slate-950 font-black" />
-        </div>
-
-        {/* LOGO YA MAANDISHI (Responsive text size for mobile) */}
-        <div className="flex justify-center mb-3 w-full">
+        <div className="flex justify-center mb-4 w-full">
           <div className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight select-none leading-none">
             <span 
               className="text-white" 
@@ -141,7 +132,6 @@ export function LandingPage() {
 
           </div>
         ) : (
-          /* SEHEMU YA FOMU BAADA YA KUCHAGUA */
           <div className="flex flex-col items-center w-full mt-2">
             <button 
               onClick={() => setSelectedRole(null)}

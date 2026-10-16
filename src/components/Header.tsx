@@ -4,7 +4,8 @@ import {
   Wrench, 
   User, 
   ShieldAlert, 
-  PhoneCall
+  PhoneCall,
+  FlaskConical
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -26,29 +27,29 @@ export const Header: React.FC = () => {
 
   return (
     <header className="bg-slate-900/95 border-b border-slate-800 text-white sticky top-0 z-50 shadow-2xl backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between py-2.5 gap-3">
-          
-          {/* Logo & Brand Info (Spana Juu Katikati ya Jina) */}
-          <div className="flex items-center justify-between">
-            <div 
-              onClick={() => setRole('landing')}
-              className="flex items-center gap-3 cursor-pointer group py-1 select-none"
-            >
-              <div className="bg-gradient-to-tr from-amber-500 via-teal-500 to-emerald-400 p-2.5 rounded-xl shadow-lg shadow-teal-500/20 group-hover:scale-105 transition-all duration-300 border border-teal-400/30">
-                <Wrench className="w-5 h-5 text-slate-950 font-black" />
-              </div>
-              <span className="text-xl md:text-2xl font-black text-white tracking-tight group-hover:text-teal-400 transition-colors leading-none">
-                Tech<span className="text-amber-400">Assist</span><span className="text-teal-400">TZ</span>
-              </span>
-            </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col items-center justify-center gap-3">
+        
+        {/* LOGO YA SPANA NA JINA - CENTERED JUU KATIKATI */}
+        <div 
+          onClick={() => setRole('landing')}
+          className="flex flex-col items-center justify-center cursor-pointer group py-0.5 select-none"
+        >
+          <div className="bg-gradient-to-tr from-amber-500 via-teal-500 to-emerald-400 p-2.5 rounded-2xl shadow-lg shadow-teal-500/25 group-hover:scale-110 transition-all duration-300 mb-1 border border-teal-400/30">
+            <Wrench className="w-5 h-5 text-slate-950 font-black" />
           </div>
+          <span className="text-xl md:text-2xl font-black text-white tracking-tight group-hover:text-teal-400 transition-colors leading-none">
+            Tech<span className="text-amber-400">Assist</span><span className="text-teal-400">TZ</span>
+          </span>
+        </div>
 
-          {/* Role Navigation Bar (Yenye Menyu za Kawaida Tu) */}
-          <div className="flex flex-wrap items-center justify-center gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl border border-slate-800/80 shadow-inner">
+        {/* MENYU YA CHINI YA LOGO */}
+        <div className="w-full flex flex-wrap items-center justify-between gap-3">
+          
+          {/* Navigation Buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl border border-slate-800/80 shadow-inner mx-auto">
             <button
               onClick={() => setRole('landing')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'landing'
                   ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30 font-bold scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -60,7 +61,7 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setRole('ai_chat')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'ai_chat'
                   ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30 ring-1 ring-purple-400 font-bold scale-[1.02]'
                   : 'text-purple-300 hover:text-white hover:bg-slate-800/60 bg-purple-950/30 border border-purple-500/30'
@@ -72,7 +73,7 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setRole('mteja')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'mteja'
                   ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 ring-1 ring-emerald-400/40 font-bold scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -84,7 +85,7 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setRole('fundi')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'fundi'
                   ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30 font-bold scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -103,7 +104,7 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setRole('admin')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'admin'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-1 ring-blue-400/40 font-bold scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -117,58 +118,41 @@ export const Header: React.FC = () => {
                 </span>
               )}
             </button>
+
+            {/* CHUMBA CHA SUPERADMIN / TESTS */}
+            <button
+              onClick={() => setRole('tests')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 ${
+                role === 'tests'
+                  ? 'bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-400/40 font-black ring-2 ring-emerald-200 scale-[1.02]'
+                  : 'text-slate-400 hover:text-emerald-300 hover:bg-slate-800/60'
+              }`}
+              title="Superadmin System Diagnostics"
+            >
+              <FlaskConical className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Superadmin</span>
+            </button>
           </div>
 
-          {/* User Session & Fundi Selector Only */}
-          <div className="flex items-center justify-end gap-3">
-            {role === 'fundi' && (
-              <div className="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700">
-                <span className="text-[11px] text-slate-400 hidden sm:inline">Akaunti:</span>
-                <select
-                  value={activeFundiId}
-                  onChange={(e) => setActiveFundiId(e.target.value)}
-                  className="bg-slate-900 text-white text-xs font-semibold rounded-lg px-2 py-1 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-400"
-                >
-                  {technicians.map((tech) => (
-                    <option key={tech.id} value={tech.id}>
-                      {tech.name} ({tech.trade}) {tech.isExpelled ? '⛔ [AMEONDOLEWA]' : tech.consecutiveMissedCalls > 0 ? `⚠️ [${tech.consecutiveMissedCalls}/3]` : '✅'}
-                    </option>
-                  ))}
-                </select>
+          {/* User Session Info */}
+          {currentUserSession && (
+            <div className="flex items-center gap-2 bg-slate-800/90 px-3 py-1.5 rounded-xl border border-slate-700 shadow-sm mx-auto sm:mx-0">
+              <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-amber-500/20 to-emerald-500/20 border border-emerald-500/40 text-emerald-300 flex items-center justify-center text-xs font-black">
+                {currentUserSession.name.charAt(0).toUpperCase()}
               </div>
-            )}
-
-            {currentUserSession ? (
-              <div className="flex items-center gap-2 bg-slate-800/90 px-3 py-1.5 rounded-xl border border-slate-700 shadow-sm">
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-amber-500/20 to-emerald-500/20 border border-emerald-500/40 text-emerald-300 flex items-center justify-center text-xs font-black">
-                  {currentUserSession.name.charAt(0).toUpperCase()}
+              <div className="text-left">
+                <div className="text-xs font-bold text-white max-w-[120px] truncate leading-tight">
+                  {currentUserSession.name}
                 </div>
-                <div className="text-left hidden sm:block">
-                  <div className="text-xs font-bold text-white max-w-[120px] truncate leading-tight">
-                    {currentUserSession.name}
-                  </div>
-                  <div className="text-[10px] text-amber-400 font-semibold truncate max-w-[120px]">
-                    {currentUserSession.category}
-                  </div>
-                </div>
-                <button
-                  onClick={logoutUser}
-                  className="px-2 py-1 text-[11px] font-semibold text-slate-400 hover:text-red-400 hover:bg-slate-700/50 rounded-lg transition-colors"
-                  title="Toka kwenye akaunti"
-                >
-                  Toka
-                </button>
               </div>
-            ) : (
-              <button 
-                onClick={() => setRole('ai_chat')}
-                className="hidden md:flex items-center gap-2 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl shadow-md shadow-teal-500/10 hover:shadow-teal-500/25 transition-all duration-200 active:scale-95"
+              <button
+                onClick={logoutUser}
+                className="px-2 py-0.5 text-[10px] font-semibold text-slate-400 hover:text-red-400 hover:bg-slate-700/50 rounded-lg transition-colors"
               >
-                <PhoneCall className="w-3.5 h-3.5" />
-                <span>Pata Msaada</span>
+                Toka
               </button>
-            )}
-          </div>
+            </div>
+          )}
 
         </div>
       </div>
