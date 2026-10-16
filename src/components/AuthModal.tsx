@@ -1,121 +1,158 @@
 import React, { useState } from 'react';
+import { useApp } from '../context/AppContext';
+import { User, Lock, Phone, Building, ArrowRight, ShieldCheck } from 'lucide-react';
 
 interface AuthModalProps {
-  role: string;
-  categoryName?: string;
+  role: string | null;
+  categoryName: string;
   onLoginComplete: () => void;
 }
 
-export function AuthModal({ role, categoryName, onLoginComplete }: AuthModalProps) {
-  const [isRegister, setIsRegister] = useState(false);
+export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLoginComplete }) => {
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    password: '',
+    orgType: categoryName || 'Binafsi',
+  });
 
-  // 1. Kutambua jina la kundi linaloandikishwa
-  const roleDisplayName = categoryName || (role === 'FUNDI' ? 'Mtaalamu' : role === 'ADMIN' ? 'Admin' : 'Mteja');
-  
-  // 2. Kutambua kama huyu ni mteja wa Taasisi badala ya Mtu Binafsi
-  const isInstitution = role?.startsWith('CUSTOMER_') && role !== 'CUSTOMER_BINAFSI';
+  const { setCurrentUserSession } = useApp();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Hifadhi taarifa za mtumiaji aliyeingia au kujisajili
+    setCurrentUserSession({
+      name: formData.name || (isRegistering ? 'Mteja Mpya' : 'Mteja Mzoefu'),
+      category: categoryName || 'Mteja Binafsi',
+      phone: formData.phone || '+255 700 000 000',
+      role: role || 'mteja'
+    });
+
     onLoginComplete();
   };
 
   return (
-    <div className="mt-8 bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-3xl max-w-md mx-auto shadow-2xl animate-in fade-in slide-in-from-bottom-4">
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-teal-500/10 text-teal-400 mb-4 border border-teal-500/20">
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-        </div>
-        <h3 className="text-2xl font-bold text-white tracking-tight">
-          {isRegister ? `Jisajili: ${roleDisplayName}` : `Ingia: ${roleDisplayName}`}
+    <div className="w-full max-w-md mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-teal-900/10 animate-in fade-in zoom-in-95 duration-300">
+      
+      {/* Header ya Fomu */}
+      <div className="text-center mb-6">
+        <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-teal-500/10 text-teal-400 border border-teal-500/20 mb-2">
+          {categoryName ? `Kundi: ${categoryName}` : 'Portal ya Mteja'}
+        </span>
+        <h3 className="text-xl font-black text-white">
+          {isRegistering ? 'Tengeneza Akaunti Mpya' : 'Ingia Kwenye Akaunti Yako'}
         </h3>
-        <p className="text-sm text-slate-400 mt-2">
-          Weka taarifa zako hapa chini kuendelea
+        <p className="text-xs text-slate-400 mt-1">
+          {isRegistering 
+            ? 'Jaza taarifa zako ili kupata huduma za usaidizi wa TEHAMA' 
+            : 'Ingiza namba yako ya simu na nenosiri kuendelea'}
         </p>
       </div>
 
-      <form className="space-y-5" onSubmit={handleSubmit}>
-        {/* SEHEMU YA USAJILI */}
-        {isRegister && (
-          <div className="space-y-5 animate-in fade-in slide-in-from-top-2">
-            <div>
-              <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">
-                Jina Kamili la Mhusika / Mwombaji
-              </label>
-              <input 
-                type="text" 
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all" 
-                placeholder="K.m. Dkt. Emmanuel Mushi" 
-                required 
+      {/* Switcher Tab (Ingia vs Jisajili) */}
+      <div className="grid grid-cols-2 bg-slate-950 p-1 rounded-2xl border border-slate-800 mb-6 text-xs font-bold">
+        <button
+          type="button"
+          onClick={() => setIsRegistering(false)}
+          className={`py-2.5 rounded-xl transition-all ${
+            !isRegistering 
+              ? 'bg-teal-500 text-slate-950 shadow-md font-extrabold' 
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          🔑 Ingia (Login)
+        </button>
+        <button
+          type="button"
+          onClick={() => setIsRegistering(true)}
+          className={`py-2.5 rounded-xl transition-all ${
+            isRegistering 
+              ? 'bg-teal-500 text-slate-950 shadow-md font-extrabold' 
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          📝 Jisajili (Register)
+        </button>
+      </div>
+
+      {/* FOMU KUU */}
+      <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+        
+        {/* Jina kamili au la Taasisi (Kwa wanaojisajili tu) */}
+        {isRegistering && (
+          <div>
+            <label className="block font-bold text-slate-300 mb-1">
+              Jina Kamili / Jina la Taasisi
+            </label>
+            <div className="relative">
+              <User className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+              <input
+                type="text"
+                required
+                placeholder="Mfano: Chuo cha VETA / John Doe"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 transition-colors"
               />
             </div>
-
-            {/* Inatokea TU ikiwa ni Taasisi, Shule, Kanisa/Msikiti au Kampuni */}
-            {isInstitution && (
-              <div className="bg-teal-500/5 p-4 rounded-xl border border-teal-500/20">
-                <label className="block text-xs font-bold text-teal-400 mb-1.5 uppercase tracking-wider">
-                  Jina la {roleDisplayName}
-                </label>
-                <input 
-                  type="text" 
-                  className="w-full bg-slate-950 border border-teal-500/30 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all" 
-                  placeholder={`Andika jina kamili la ${roleDisplayName}`} 
-                  required 
-                />
-                <p className="text-[10px] text-slate-400 mt-2">
-                  * Taarifa hii inatusaidia kuweka viwango sahihi vya ada na gharama za huduma kulingana na kundi la mteja.
-                </p>
-              </div>
-            )}
           </div>
         )}
-        
-        {/* SEHEMU YA KUINGIA NA KUSAJILI */}
+
+        {/* Namba ya Simu */}
         <div>
-          <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">
-            Namba ya Simu au Barua Pepe
+          <label className="block font-bold text-slate-300 mb-1">
+            Namba ya Simu
           </label>
-          <input 
-            type="text" 
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all" 
-            placeholder="07XX XXX XXX au baruapepe@domain.com" 
-            required 
-          />
-        </div>
-        
-        <div>
-          <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">
-            Nenosiri (Password)
-          </label>
-          <input 
-            type="password" 
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all" 
-            placeholder="••••••••" 
-            required 
-          />
+          <div className="relative">
+            <Phone className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+            <input
+              type="tel"
+              required
+              placeholder="+255 7XX XXX XXX"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 transition-colors"
+            />
+          </div>
         </div>
 
-        <button 
-          type="submit" 
-          className="w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-900 font-bold py-3.5 rounded-xl transition-all mt-6 text-sm shadow-lg shadow-teal-900/30 active:scale-[0.98]"
+        {/* Nenosiri (Password) */}
+        <div>
+          <label className="block font-bold text-slate-300 mb-1">
+            Nenosiri (Password)
+          </label>
+          <div className="relative">
+            <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+            <input
+              type="password"
+              required
+              placeholder="••••••••"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 transition-colors"
+            />
+          </div>
+        </div>
+
+        {/* Kitufe cha Submit */}
+        <button
+          type="submit"
+          className="w-full bg-teal-500 hover:bg-teal-400 text-slate-950 font-black py-3 rounded-xl shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 transition-all flex items-center justify-center gap-2 mt-2"
         >
-          {isRegister ? 'Kamilisha Usajili' : 'Ingia kwenye Mfumo'}
+          <span>{isRegistering ? 'Kamilisha Usajili' : 'Ingia Sasa'}</span>
+          <ArrowRight className="w-4 h-4" />
         </button>
       </form>
 
-      <div className="mt-8 text-center border-t border-slate-800/50 pt-6">
-        <button 
-          type="button"
-          onClick={() => setIsRegister(!isRegister)}
-          className="text-sm text-teal-400 hover:text-teal-300 font-medium transition-colors"
-        >
-          {isRegister ? 'Tayari unayo akaunti? Ingia hapa' : 'Hauna akaunti? Jisajili hapa'}
-        </button>
+      {/* Taarifa ya Ulinzi wa Data */}
+      <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-center gap-1.5 text-[10px] text-slate-500">
+        <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
+        <span>Taarifa zote zinalindwa kwa usalama wa Mfumo wa Escrow</span>
       </div>
+
     </div>
   );
-}
-
-export default AuthModal;
+};

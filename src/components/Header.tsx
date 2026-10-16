@@ -32,6 +32,15 @@ export const Header: React.FC = () => {
     }
   };
 
+  // Uelekezo salama wa kitufe cha Mteja
+  const handleCustomerNavigation = () => {
+    if (currentUserSession) {
+      setRole('mteja');
+    } else {
+      setRole('landing'); // Mpeleke kwenye Landing Page ili achague kategoria na kuingia kwanza
+    }
+  };
+
   const currentFundi = technicians.find((t) => t.id === activeFundiId) || technicians[0];
   const activeTicketsCount = tickets.filter(
     (t) => t.status === 'PAID_WAITING_DISPATCH' || t.status === 'EN_ROUTE' || t.status === 'ARRIVED' || t.status === 'IN_PROGRESS'
@@ -41,7 +50,7 @@ export const Header: React.FC = () => {
     <header className="bg-slate-900/95 border-b border-slate-800 text-white sticky top-0 z-50 shadow-2xl backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col items-center justify-center gap-3">
         
-        {/* LOGO YA SPANA NA JINA - CENTERED JUU KATIKATI (Bonus: Secret Click kwa Superadmin) */}
+        {/* LOGO YA SPANA NA JINA - CENTERED JUU KATIKATI (Secret Click kwa Superadmin) */}
         <div 
           onClick={handleSecretSuperadminClick}
           title="TechAssistTZ"
@@ -55,7 +64,7 @@ export const Header: React.FC = () => {
           </span>
         </div>
 
-        {/* MENYU YA CHINI YA LOGO (Ipo Safi Bila Superadmin Kuonekana) */}
+        {/* MENYU YA CHINI YA LOGO */}
         <div className="w-full flex flex-wrap items-center justify-between gap-3">
           
           {/* Navigation Buttons */}
@@ -85,7 +94,7 @@ export const Header: React.FC = () => {
             </button>
 
             <button
-              onClick={() => setRole('mteja')}
+              onClick={handleCustomerNavigation}
               className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'mteja'
                   ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 ring-1 ring-emerald-400/40 font-bold scale-[1.02]'
@@ -133,8 +142,8 @@ export const Header: React.FC = () => {
             </button>
           </div>
 
-          {/* User Session Info */}
-          {currentUserSession && (
+          {/* User Session Info / Action Button */}
+          {currentUserSession ? (
             <div className="flex items-center gap-2 bg-slate-800/90 px-3 py-1.5 rounded-xl border border-slate-700 shadow-sm mx-auto sm:mx-0">
               <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-amber-500/20 to-emerald-500/20 border border-emerald-500/40 text-emerald-300 flex items-center justify-center text-xs font-black">
                 {currentUserSession.name.charAt(0).toUpperCase()}
@@ -151,6 +160,14 @@ export const Header: React.FC = () => {
                 Toka
               </button>
             </div>
+          ) : (
+            <button 
+              onClick={() => setRole('ai_chat')}
+              className="hidden md:flex items-center gap-2 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl shadow-md shadow-teal-500/10 hover:shadow-teal-500/25 transition-all duration-200 active:scale-95 mx-auto sm:mx-0"
+            >
+              <PhoneCall className="w-3.5 h-3.5" />
+              <span>Pata Msaada</span>
+            </button>
           )}
 
         </div>

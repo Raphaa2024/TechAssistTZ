@@ -12,6 +12,7 @@ import { FarDistanceWarningModal } from './FarDistanceWarningModal';
 import { PaymentModal } from './PaymentModal';
 import { ChatModal } from './ChatModal';
 import { CallModal } from './CallModal';
+import { InvoiceModal } from './InvoiceModal';
 import { 
   Wrench, 
   MapPin, 
@@ -29,10 +30,10 @@ import {
   ArrowRight,
   Info,
   FileText,
-  Printer
+  Printer,
+  User,
+  ArrowLeft
 } from 'lucide-react';
-
-import { InvoiceModal } from './InvoiceModal';
 
 export const CustomerPortal: React.FC = () => {
   const { 
@@ -46,6 +47,16 @@ export const CustomerPortal: React.FC = () => {
     setRole,
     currentUserSession
   } = useApp();
+
+  // CHUJA TIKETI ZA MTEJA HUYU PEKEE (Data Privacy)
+  const myTickets = tickets.filter((t) => {
+    if (!currentUserSession) return false;
+    return (
+      t.customerPhone === currentUserSession.phone ||
+      t.customerName === currentUserSession.name ||
+      t.customerName === currentUserSession.orgName
+    );
+  });
 
   // Active view: 'tracking' | 'book_new'
   const [viewMode, setViewMode] = useState<'tracking' | 'book_new'>('tracking');
@@ -62,8 +73,8 @@ export const CustomerPortal: React.FC = () => {
   });
   const [addressDetail, setAddressDetail] = useState('Mtaa wa Ada Estate, Nyumba Na. 14');
   const [problemDescription, setProblemDescription] = useState('Kompyuta inawaka taa lakini inatoa skrini nyeusi (No Display) na kuwaka feni kwa nguvu.');
-  const [customerName, setCustomerName] = useState(() => currentUserSession?.orgName || currentUserSession?.name || 'Mussa Jumanne');
-  const [customerPhone, setCustomerPhone] = useState(() => currentUserSession?.phone || '+255 715 009 231');
+  const [customerName, setCustomerName] = useState(() => currentUserSession?.orgName || currentUserSession?.name || 'Mteja');
+  const [customerPhone, setCustomerPhone] = useState(() => currentUserSession?.phone || '+255 700 000 000');
 
   // Far Distance Warning Modal state
   const [warningModalOpen, setWarningModalOpen] = useState(false);
@@ -142,7 +153,31 @@ export const CustomerPortal: React.FC = () => {
     setPaymentModalOpen(true);
   };
 
-  const currentDisplayTicket = activeTicket || tickets[0] || null;
+  const currentDisplayTicket = myTickets.find(t => t.id === selectedTicketId) || myTickets[0] || activeTicket || null;
+
+  // Ikiwa mtumiaji hajazisajili au kuingia, mwelekeze kujisajili
+  if (!currentUserSession) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16 text-center animate-in fade-in duration-300">
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 sm:p-12 shadow-2xl">
+          <div className="w-16 h-16 bg-teal-500/10 border border-teal-500/30 text-teal-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <User className="w-8 h-8" />
+          </div>
+          <h2 className="text-xl font-black text-white mb-2">Hujaingia Kwenye Akaunti Yako</h2>
+          <p className="text-slate-400 text-xs sm:text-sm leading-relaxed mb-6">
+            Ili kupata huduma za ufundi wa TEHAMA, kuomba fundi au kuangalia tiketi zako zilizopo, tafadhali chagua kategoria yako na uingie kwenye mfumo.
+          </p>
+          <button
+            onClick={() => setRole('landing')}
+            className="bg-teal-500 hover:bg-teal-400 text-slate-950 font-black px-6 py-3 rounded-xl text-xs shadow-lg shadow-teal-500/20 transition-all flex items-center justify-center gap-2 mx-auto active:scale-95"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Rudi Chagua Kategoria Yako</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
@@ -157,11 +192,11 @@ export const CustomerPortal: React.FC = () => {
             <h1 className="text-lg font-bold text-white flex items-center gap-2">
               <span>Hujambo, {customerName}</span>
               <span className="text-[11px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full border border-slate-700">
-                {customerWard.name}
+                {currentUserSession.category || customerWard.name}
               </span>
             </h1>
             <p className="text-xs text-slate-400">
-              Weka ombi la fundi, fuatilia safari kwa wakati halisi, na lipa kwa kampuni kwa usalama.
+              Weka ombi la fundi, fuatilia safari kwa wakati halisi, na lipa kwa usalama kupitia Escrow.
             </p>
           </div>
         </div>
@@ -177,7 +212,7 @@ export const CustomerPortal: React.FC = () => {
             }`}
           >
             <Clock className="w-3.5 h-3.5" />
-            <span>Ufuatiliaji wa Tiketi ({tickets.length})</span>
+            <span>Tiketi Zangu ({myTickets.length})</span>
           </button>
 
           <button
@@ -207,60 +242,72 @@ export const CustomerPortal: React.FC = () => {
                 Tiketi Zako za Huduma
               </h3>
 
-              <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
-                {tickets.map((t) => {
-                  const isSelected = selectedTicketId === t.id;
-                  return (
-                    <div
-                      key={t.id}
-                      onClick={() => setSelectedTicketId(t.id)}
-                      className={`p-3 rounded-xl border cursor-pointer transition-all ${
-                        isSelected
-                          ? 'bg-slate-800 border-emerald-500 shadow-md ring-1 ring-emerald-500/30'
-                          : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs font-bold text-white flex items-center gap-2">
-                          <span>{t.trade}</span>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-amber-400 border border-slate-800">
-                            {t.tokenNumber}
+              {myTickets.length === 0 ? (
+                <div className="text-center py-6 text-slate-500 text-xs">
+                  Bado hujatengeneza ombi lolote la ufundi.
+                  <button 
+                    onClick={() => setViewMode('book_new')}
+                    className="block mx-auto mt-2 text-teal-400 font-bold hover:underline"
+                  >
+                    + Tengeneza Ombi la Kwanza Sasa
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+                  {myTickets.map((t) => {
+                    const isSelected = currentDisplayTicket?.id === t.id;
+                    return (
+                      <div
+                        key={t.id}
+                        onClick={() => setSelectedTicketId(t.id)}
+                        className={`p-3 rounded-xl border cursor-pointer transition-all ${
+                          isSelected
+                            ? 'bg-slate-800 border-emerald-500 shadow-md ring-1 ring-emerald-500/30'
+                            : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-xs font-bold text-white flex items-center gap-2">
+                            <span>{t.trade}</span>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-amber-400 border border-slate-800">
+                              {t.tokenNumber}
+                            </span>
                           </span>
-                        </span>
-                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                          t.status === 'EN_ROUTE'
-                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                            : t.status === 'ARRIVED'
-                            ? 'bg-emerald-500/20 text-emerald-300'
-                            : t.status === 'PAID_WAITING_DISPATCH'
-                            ? 'bg-blue-500/20 text-blue-300'
-                            : t.status === 'COMPLETED'
-                            ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/30'
-                            : 'bg-red-500/20 text-red-300'
-                        }`}>
-                          {t.status === 'PENDING_PAYMENT' && 'Inasubiri Malipo'}
-                          {t.status === 'PAID_WAITING_DISPATCH' && 'Imelipwa (Kuanza Safari)'}
-                          {t.status === 'EN_ROUTE' && 'Fundi Yuko Njiani'}
-                          {t.status === 'ARRIVED' && 'Amewasili Mlangoni'}
-                          {t.status === 'IN_PROGRESS' && 'Kazi Inaendelea'}
-                          {t.status === 'COMPLETED' && 'Imekamilika'}
-                        </span>
-                      </div>
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                            t.status === 'EN_ROUTE'
+                              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                              : t.status === 'ARRIVED'
+                              ? 'bg-emerald-500/20 text-emerald-300'
+                              : t.status === 'PAID_WAITING_DISPATCH'
+                              ? 'bg-blue-500/20 text-blue-300'
+                              : t.status === 'COMPLETED'
+                              ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/30'
+                              : 'bg-red-500/20 text-red-300'
+                          }`}>
+                            {t.status === 'PENDING_PAYMENT' && 'Inasubiri Malipo'}
+                            {t.status === 'PAID_WAITING_DISPATCH' && 'Imelipwa (Kuanza Safari)'}
+                            {t.status === 'EN_ROUTE' && 'Fundi Yuko Njiani'}
+                            {t.status === 'ARRIVED' && 'Amewasili Mlangoni'}
+                            {t.status === 'IN_PROGRESS' && 'Kazi Inaendelea'}
+                            {t.status === 'COMPLETED' && 'Imekamilika'}
+                          </span>
+                        </div>
 
-                      <p className="text-xs text-slate-300 line-clamp-1 mb-2">
-                        {t.serviceDescription}
-                      </p>
+                        <p className="text-xs text-slate-300 line-clamp-1 mb-2">
+                          {t.serviceDescription}
+                        </p>
 
-                      <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800/80">
-                        <span>Fundi: <strong className="text-white">{t.technicianName}</strong></span>
-                        <span className="font-mono text-emerald-400 font-bold">
-                          TZS {t.totalAmount.toLocaleString()}
-                        </span>
+                        <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800/80">
+                          <span>Fundi: <strong className="text-white">{t.technicianName}</strong></span>
+                          <span className="font-mono text-emerald-400 font-bold">
+                            TZS {t.totalAmount.toLocaleString()}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Current Selected Ticket Card */}
@@ -340,32 +387,6 @@ export const CustomerPortal: React.FC = () => {
                   </div>
                 </div>
 
-                {/* AI Troubleshooting Card */}
-                {(currentDisplayTicket.aiDiagnosis || currentDisplayTicket.serviceDescription) && (
-                  <div className="bg-slate-950/90 rounded-xl p-3.5 border border-pink-500/30 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold text-pink-400 flex items-center gap-1.5 uppercase tracking-wide">
-                        <span className="w-2 h-2 rounded-full bg-pink-400 animate-ping" />
-                        <span>TechAssist AI: Uchunguzi & Usalama</span>
-                      </span>
-                      <span className="text-[10px] bg-pink-500/20 text-pink-300 px-2 py-0.5 rounded font-mono font-bold">
-                        {currentDisplayTicket.aiSeverity || 'Uchunguzi wa Moja kwa Moja'}
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-slate-200">
-                      <strong>Uchunguzi:</strong> {currentDisplayTicket.aiDiagnosis || 'Hitilafu inakaguliwa na kanuni ya TechAssist...'}
-                    </p>
-
-                    {currentDisplayTicket.aiSafetyAdvice && (
-                      <div className="bg-amber-950/40 p-2.5 rounded-lg border border-amber-500/30 text-[11px] text-amber-200 flex items-start gap-1.5">
-                        <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-                        <span><strong>Tahadhari ya Haraka:</strong> {currentDisplayTicket.aiSafetyAdvice}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-
                 {/* Payment Action */}
                 {(currentDisplayTicket.status === 'PENDING_PAYMENT' || currentDisplayTicket.status === 'INVOICE_SENT') && (
                   <div className="bg-emerald-950/40 border border-emerald-500/40 rounded-xl p-3.5 space-y-2.5">
@@ -416,70 +437,6 @@ export const CustomerPortal: React.FC = () => {
                       <span>✓</span>
                       <span>Thibitisha Kazi Imekamilika & Toa Malipo Escrow</span>
                     </button>
-                  </div>
-                )}
-
-                {/* RISITI YA KIDIGITALI (ELECTRONIC FISCAL RECEIPT) BAADA YA KUKAMILIKA */}
-                {currentDisplayTicket.status === 'COMPLETED' && currentDisplayTicket.receipt && (
-                  <div className="bg-slate-950 border border-teal-500/40 p-5 rounded-2xl shadow-2xl text-left font-sans animate-in fade-in zoom-in-95">
-                    <div className="border-b border-dashed border-slate-700 pb-3 mb-3 text-center">
-                      <h3 className="text-lg font-black text-white tracking-wider">TechAssistTZ</h3>
-                      <p className="text-[10px] text-teal-400 font-mono uppercase tracking-widest mt-0.5">ELECTRONIC FISCAL RECEIPT</p>
-                      <p className="text-[9px] text-slate-400 mt-0.5 font-mono">TIN: {currentDisplayTicket.receipt.tinNumber} | VRN: {currentDisplayTicket.receipt.vrnNumber}</p>
-                    </div>
-
-                    <div className="space-y-1.5 text-[11px] text-slate-300 font-mono mb-3 bg-slate-900/80 p-3 rounded-xl border border-slate-800">
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Na. ya Risiti:</span>
-                        <span className="font-bold text-teal-400">{currentDisplayTicket.receipt.receiptNumber}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Tarehe & Muda:</span>
-                        <span>{new Date(currentDisplayTicket.receipt.issuedAt).toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Mteja:</span>
-                        <span className="font-semibold text-white">{currentDisplayTicket.receipt.customerOrgName || currentDisplayTicket.receipt.customerName}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Fundi:</span>
-                        <span className="text-white">{currentDisplayTicket.receipt.technicianName}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Njia ya Malipo:</span>
-                        <span className="text-amber-400">{currentDisplayTicket.receipt.paymentProvider}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Ref:</span>
-                        <span>{currentDisplayTicket.receipt.transactionRef}</span>
-                      </div>
-                    </div>
-
-                    <div className="border-t border-b border-slate-800 py-2 my-2 space-y-1 text-xs">
-                      <div className="flex justify-between text-slate-400 text-[11px]">
-                        <span>Gharama ya Ufundi:</span>
-                        <span>TZS {currentDisplayTicket.receipt.subtotal.toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between text-slate-400 text-[11px]">
-                        <span>Nauli / Usafiri wa Fundi:</span>
-                        <span>TZS {currentDisplayTicket.receipt.transportFee.toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between font-bold text-teal-400 text-xs pt-1.5 border-t border-slate-800">
-                        <span>JUMLA ILIYOLIPWA:</span>
-                        <span>TZS {currentDisplayTicket.receipt.totalPaid.toLocaleString()}</span>
-                      </div>
-                    </div>
-
-                    <div className="text-center pt-1">
-                      <p className="text-[9px] text-slate-500 font-mono">TRA Code: {currentDisplayTicket.receipt.verificationCode}</p>
-                      <button 
-                        onClick={() => window.print()} 
-                        className="mt-3 w-full bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 font-bold py-2.5 rounded-xl text-xs border border-teal-500/30 transition-all flex items-center justify-center gap-2"
-                      >
-                        <Printer className="w-3.5 h-3.5" />
-                        <span>Chapisha Risiti (PDF)</span>
-                      </button>
-                    </div>
                   </div>
                 )}
 
