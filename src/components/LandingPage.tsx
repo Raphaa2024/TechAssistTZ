@@ -47,9 +47,15 @@ export function LandingPage() {
     <div className="flex flex-col items-center justify-center py-12 px-4 animate-in fade-in duration-500">
       
       {/* SEHEMU YA LOGO NA MAANDISHI (HERO SECTION) */}
-      <div className="text-center mb-12 max-w-3xl">
-        <div className="flex justify-center mb-8">
-          {/* LOGO YA MAANDISHI (Yenye rangi na 3D/Glitch effect kama kwenye picha yako) */}
+      <div className="text-center mb-12 max-w-3xl flex flex-col items-center">
+        
+        {/* ICON YA SPANA JUU KATIKATI YA JINA */}
+        <div className="bg-gradient-to-tr from-amber-500 via-teal-500 to-emerald-400 p-3.5 md:p-4 rounded-3xl shadow-2xl shadow-teal-500/20 mb-4 border border-teal-400/30 hover:scale-105 transition-transform duration-300">
+          <Wrench className="w-8 h-8 md:w-10 md:h-10 text-slate-950 font-black" />
+        </div>
+
+        {/* LOGO YA MAANDISHI (Yenye rangi na 3D/Glitch effect) */}
+        <div className="flex justify-center mb-4">
           <div className="text-5xl md:text-7xl font-black tracking-tighter select-none">
             <span 
               className="text-white" 
