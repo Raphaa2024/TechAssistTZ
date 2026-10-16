@@ -48,7 +48,7 @@ export const CustomerPortal: React.FC = () => {
     currentUserSession
   } = useApp();
 
-  // CHUJA TIKETI ZA MTEJA HUYU PEKEE (Data Privacy)
+  // CHUJA TIKETI ZA MTEJA HUYU PEKEE
   const myTickets = tickets.filter((t) => {
     if (!currentUserSession) return false;
     return (
@@ -58,10 +58,8 @@ export const CustomerPortal: React.FC = () => {
     );
   });
 
-  // Active view: 'tracking' | 'book_new'
   const [viewMode, setViewMode] = useState<'tracking' | 'book_new'>('tracking');
 
-  // Booking Form State
   const [selectedTrade, setSelectedTrade] = useState<TradeCategory>('Kompyuta & Laptop');
   const [deviceModel, setDeviceModel] = useState('HP ProBook / Dell Latitude');
   const [customerWard, setCustomerWard] = useState<WardLocation>(() => {
@@ -76,7 +74,6 @@ export const CustomerPortal: React.FC = () => {
   const [customerName, setCustomerName] = useState(() => currentUserSession?.orgName || currentUserSession?.name || 'Mteja');
   const [customerPhone, setCustomerPhone] = useState(() => currentUserSession?.phone || '+255 700 000 000');
 
-  // Far Distance Warning Modal state
   const [warningModalOpen, setWarningModalOpen] = useState(false);
   const [pendingTechnician, setPendingTechnician] = useState<Technician | null>(null);
   const [pendingDistanceCalc, setPendingDistanceCalc] = useState<{
@@ -88,13 +85,11 @@ export const CustomerPortal: React.FC = () => {
   const [closerTechnician, setCloserTechnician] = useState<Technician | null>(null);
   const [closerDistanceKm, setCloserDistanceKm] = useState(0);
 
-  // Modals
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [invoiceModalOpen, setInvoiceModalOpen] = useState(false);
   const [chatModalOpen, setChatModalOpen] = useState(false);
   const [callModalOpen, setCallModalOpen] = useState(false);
 
-  // Review Form
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('Mtaalamu amefika kwa wakati na kutatua tatizo la kompyuta kwa ustadi mkubwa.');
 
@@ -107,12 +102,10 @@ export const CustomerPortal: React.FC = () => {
     { name: 'CCTV & Vifaa vya Usalama', icon: '📹', desc: 'NVR/DVR, Biometric Time Attendance, Cameras' },
   ];
 
-  // Filter available technicians for selected trade
   const availableTechsForTrade = technicians.filter(
     (t) => t.trade === selectedTrade && !t.isExpelled
   );
 
-  // Handle clicking a technician in booking flow
   const handleSelectTechnician = (tech: Technician) => {
     const calc = calculateDistance(tech.currentLocation, customerWard);
 
@@ -155,7 +148,6 @@ export const CustomerPortal: React.FC = () => {
 
   const currentDisplayTicket = myTickets.find(t => t.id === selectedTicketId) || myTickets[0] || activeTicket || null;
 
-  // Ikiwa mtumiaji hajazisajili au kuingia, mwelekeze kujisajili
   if (!currentUserSession) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center animate-in fade-in duration-300">
@@ -299,9 +291,12 @@ export const CustomerPortal: React.FC = () => {
 
                         <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800/80">
                           <span>Fundi: <strong className="text-white">{t.technicianName}</strong></span>
-                          <span className="font-mono text-emerald-400 font-bold">
-                            TZS {t.totalAmount.toLocaleString()}
-                          </span>
+                          <div className="text-right">
+                            <span className="font-mono text-emerald-400 font-bold block">
+                              TZS {t.totalAmount.toLocaleString()}
+                            </span>
+                            <span className="text-[9px] text-slate-500">(Pamoja na 18% VAT)</span>
+                          </div>
                         </div>
                       </div>
                     );
@@ -314,7 +309,6 @@ export const CustomerPortal: React.FC = () => {
             {currentDisplayTicket && (
               <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
                 
-                {/* Reassignment Alert Banner */}
                 {currentDisplayTicket.isReassignedToken && (
                   <div className="bg-amber-950/40 border border-amber-500/40 rounded-xl p-3 text-xs text-amber-300 space-y-1">
                     <div className="flex items-center gap-1.5 font-bold">
@@ -322,7 +316,7 @@ export const CustomerPortal: React.FC = () => {
                       <span>Token Imehamishiwa kwa Fundi Mpya!</span>
                     </div>
                     <p className="text-[11px] text-slate-300 leading-relaxed">
-                      Fundi wa awali (<strong>{currentDisplayTicket.previousTechnicianName}</strong>) alipata hitilafu ya usafiri/dharura. Mfumo umempa token namba <strong>{currentDisplayTicket.tokenNumber}</strong> fundi <strong>{currentDisplayTicket.technicianName}</strong> bila malipo ya ziada.
+                      Fundi wa awali (<strong>{currentDisplayTicket.previousTechnicianName}</strong>) alipata hitilafu ya usafiri. Token <strong>{currentDisplayTicket.tokenNumber}</strong> imehamishwa kwa <strong>{currentDisplayTicket.technicianName}</strong> bila malipo ya ziada.
                     </p>
                   </div>
                 )}
@@ -392,9 +386,12 @@ export const CustomerPortal: React.FC = () => {
                   <div className="bg-emerald-950/40 border border-emerald-500/40 rounded-xl p-3.5 space-y-2.5">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-white">Ankara ya Matengenezo (Escrow)</span>
-                      <span className="text-xs font-mono font-bold text-emerald-400">
-                        TZS {currentDisplayTicket.totalAmount.toLocaleString()}
-                      </span>
+                      <div className="text-right">
+                        <span className="text-xs font-mono font-bold text-emerald-400 block">
+                          TZS {currentDisplayTicket.totalAmount.toLocaleString()}
+                        </span>
+                        <span className="text-[9px] text-emerald-200/70">Pamoja na 18% VAT</span>
+                      </div>
                     </div>
                     <p className="text-[11px] text-slate-300">
                       Fedha zinalipwa kwenye akaunti ya kampuni (Escrow) na zinakatwa 15% kwa uendeshaji; mtaalamu analipwa 85% baada ya wewe kuridhika.
@@ -450,7 +447,6 @@ export const CustomerPortal: React.FC = () => {
               <>
                 <LiveMapTracker ticket={currentDisplayTicket} />
 
-                {/* Quick Communication Box */}
                 <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-xs font-bold text-slate-300 flex items-center gap-2">
@@ -508,11 +504,10 @@ export const CustomerPortal: React.FC = () => {
           <div>
             <h2 className="text-base font-bold text-white mb-1">Tengeneza Ombi Jipya la Fundi</h2>
             <p className="text-xs text-slate-400">
-              Chagua aina ya huduma, thibitisha eneo lako, na mfumo utapendekeza mafundi kulingana na umbali na muda wa kufika.
+              Chagua aina ya huduma, thibitisha eneo lako, na mfumo utapendekeza mafundi kulingana na umbali na muda wa kufika. Kodi ya VAT 18% inahusika kisheria.
             </p>
           </div>
 
-          {/* Trade Category Selector */}
           <div>
             <label className="text-xs font-bold text-slate-300 block mb-2">
               1. Chagua Aina ya Ufundi:
@@ -539,7 +534,6 @@ export const CustomerPortal: React.FC = () => {
             </div>
           </div>
 
-          {/* Location and Address Detail */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="text-xs font-bold text-slate-300 block mb-1">
@@ -575,7 +569,6 @@ export const CustomerPortal: React.FC = () => {
             </div>
           </div>
 
-          {/* Problem Description */}
           <div>
             <label className="text-xs font-bold text-slate-300 block mb-1">
               3. Eleza Tatizo Linalohitaji Ufundi:
@@ -589,11 +582,10 @@ export const CustomerPortal: React.FC = () => {
             />
           </div>
 
-          {/* Available Technicians List */}
           <div>
             <div className="flex items-center justify-between mb-3">
               <label className="text-xs font-bold text-slate-300 block">
-                4. Chagua Fundi (Muda wa Safari & Umbali Unapigwa Mahesabu Moja kwa Moja):
+                4. Chagua Fundi (Bei Imejumuisha 18% VAT):
               </label>
             </div>
 
@@ -604,7 +596,11 @@ export const CustomerPortal: React.FC = () => {
                 </div>
               ) : (
                 availableTechsForTrade.map((tech) => {
+                  // MAHESABU YA KODI (VAT 18%)
                   const calc = calculateDistance(tech.currentLocation, customerWard);
+                  const subtotal = tech.baseFee + calc.transportFee;
+                  const vatAmount = subtotal * 0.18;
+                  const grandTotal = subtotal + vatAmount;
 
                   return (
                     <div
@@ -650,26 +646,38 @@ export const CustomerPortal: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between">
-                        <div>
-                          <span className="text-[10px] text-slate-500 block">Jumla (Huduma + Nauli)</span>
-                          <span className="text-xs font-bold text-emerald-400 font-mono">
-                            TZS {(tech.baseFee + calc.transportFee).toLocaleString()}
-                          </span>
+                      {/* DISPLAY YA MAHESABU YENYE 18% VAT */}
+                      <div>
+                        <div className="pt-2 border-t border-slate-800/80 space-y-1.5 mb-3 text-[11px]">
+                          <div className="flex justify-between text-slate-400">
+                            <span>Huduma + Usafiri:</span>
+                            <span>TZS {subtotal.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between text-slate-400">
+                            <span>Kodi (VAT 18%):</span>
+                            <span>TZS {vatAmount.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between font-bold text-emerald-400 text-xs pt-1.5 border-t border-slate-800/50">
+                            <span>JUMLA KAMILI:</span>
+                            <span className="font-mono">TZS {grandTotal.toLocaleString()}</span>
+                          </div>
                         </div>
 
-                        <button
-                          onClick={() => handleSelectTechnician(tech)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow ${
-                            calc.isFar
-                              ? 'bg-amber-500 hover:bg-amber-400 text-slate-950'
-                              : 'bg-emerald-600 hover:bg-emerald-500 text-white'
-                          }`}
-                        >
-                          <span>Chagua</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </button>
+                        <div className="flex justify-end">
+                          <button
+                            onClick={() => handleSelectTechnician(tech)}
+                            className={`px-4 py-2 w-full rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow active:scale-95 ${
+                              calc.isFar
+                                ? 'bg-amber-500 hover:bg-amber-400 text-slate-950'
+                                : 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                            }`}
+                          >
+                            <span>Chagua na Endelea</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
+                      
                     </div>
                   );
                 })
