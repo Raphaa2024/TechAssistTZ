@@ -13,7 +13,10 @@ import {
   CheckCircle,
   Mail,
   MapPin,
-  Briefcase // Tumeongeza icon ya mkoba wa kazi
+  Briefcase,
+  Camera,
+  Award,
+  FolderOpen
 } from 'lucide-react';
 
 interface AuthModalProps {
@@ -35,7 +38,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
     location: WARDS[0].name, 
     tradeCategory: 'Kompyuta & Laptop',
     godGivenSkills: '', 
-    workExperience: '', // TUMEONGEZA HAPA UZOEFU WA KAZI
+    workExperience: '', 
+    skills: '', // Ujuzi (Skills)
+    pastProjects: '', // Kazi/Miradi iliyofanikiwa (Portfolio)
+    passportPhoto: null as File | null, // Picha ya Mtaalamu
     certificates: [] as File[],
   });
 
@@ -47,10 +53,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
     }
   };
 
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFormData({ ...formData, passportPhoto: e.target.files[0] });
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Hifadhi taarifa za mtumiaji
+    // Hifadhi taarifa za mtumiaji kwenye session (kwa sasa kama mfano)
     setCurrentUserSession({
       name: formData.name || (isRegistering ? (isFundi ? 'Mtaalamu Mpya' : 'Mteja Mpya') : 'Mtumiaji'),
       category: isFundi ? `Fundi: ${formData.tradeCategory}` : (categoryName || 'Mteja Binafsi'),
@@ -63,7 +75,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-teal-900/10 animate-in fade-in zoom-in-95 duration-300">
+    <div className="w-full max-w-lg mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-teal-900/10 animate-in fade-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto custom-scrollbar">
       
       {/* Header ya Fomu */}
       <div className="text-center mb-6">
@@ -72,12 +84,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
         </span>
         <h3 className="text-xl font-black text-white">
           {isRegistering 
-            ? (isFundi ? 'Sajili Utaalamu & Eneo Lako' : 'Tengeneza Akaunti Mpya') 
+            ? (isFundi ? 'Jenga Wasifu (Profile) Wako' : 'Tengeneza Akaunti Mpya') 
             : 'Ingia Kwenye Akaunti Yako'}
         </h3>
         <p className="text-[11px] text-slate-400 mt-1">
           {isRegistering 
-            ? (isFundi ? 'Jaza taarifa zako kwa usahihi ili wateja waweze kukuona kwenye ramani (Tracking) unapowafuata.' : 'Jaza taarifa zako ili kupata huduma za usaidizi wa TEHAMA') 
+            ? (isFundi ? 'Weka picha, ujuzi na kazi zako ili kujenga uaminifu na kuvutia wateja zaidi.' : 'Jaza taarifa zako ili kupata huduma za usaidizi wa TEHAMA') 
             : 'Ingiza namba yako ya simu na nenosiri kuendelea'}
         </p>
       </div>
@@ -122,6 +134,31 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 transition-colors"
               />
             </div>
+          </div>
+        )}
+
+        {/* PICHA YA PASIPOTI (KWA WATAALAMU TU) */}
+        {isRegistering && isFundi && (
+          <div className="bg-slate-950 border border-slate-800 p-3.5 rounded-2xl space-y-2 mt-2">
+            <label className="block font-bold text-slate-300 flex items-center gap-1.5">
+              <Camera className="w-4 h-4 text-pink-400" />
+              <span>Picha ya Mtaalamu (Passport Size)</span>
+            </label>
+            <p className="text-[11px] text-slate-400">
+              Picha yako halisi inaongeza uaminifu kwa mteja kwa asilimia 80%. Tafadhali pakia picha safi inayoonyesha uso wako.
+            </p>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoChange}
+              className="block w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-pink-500/20 file:text-pink-300 hover:file:bg-pink-500/30 cursor-pointer"
+            />
+            {formData.passportPhoto && (
+              <p className="text-[10px] text-emerald-400 font-bold flex items-center gap-1 mt-1">
+                <CheckCircle className="w-3 h-3" />
+                <span>Picha Imepakiwa Kikamilifu!</span>
+              </p>
+            )}
           </div>
         )}
 
@@ -199,7 +236,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
             </div>
 
             <div>
-              <label className="block font-bold text-slate-300 mb-1">Eneo Lako (Tracking Point)</label>
+              <label className="block font-bold text-slate-300 mb-1">Eneo Lako (Kituo cha Kazi)</label>
               <div className="relative">
                 <MapPin className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
                 <select
@@ -216,6 +253,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
           </div>
         )}
 
+        {/* UJUZI / SKILLS */}
+        {isRegistering && isFundi && (
+          <div>
+            <label className="block font-bold text-slate-300 mb-1">Orodha ya Ujuzi Wako (Skills)</label>
+            <div className="relative">
+              <Award className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+              <input
+                type="text"
+                placeholder="Mfano: Networking, Micro-soldering, Python, CCTV Installation..."
+                value={formData.skills}
+                onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 transition-colors"
+              />
+            </div>
+          </div>
+        )}
+
         {/* UZOEFU WA KAZI (Work Experience) */}
         {isRegistering && isFundi && (
           <div className="bg-blue-950/20 border border-blue-500/30 p-3.5 rounded-2xl space-y-2 mt-2">
@@ -225,7 +279,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
             </label>
             <textarea
               rows={2}
-              placeholder="Mfano: Miaka 3 kama IT Support, Nimesimamia network za ofisi za serikali, n.k..."
+              placeholder="Mfano: Miaka 3 kama IT Support kwenye shirika XYZ, Kusimamia server, n.k..."
               value={formData.workExperience}
               onChange={(e) => setFormData({ ...formData, workExperience: e.target.value })}
               className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-blue-400 transition-colors"
@@ -233,19 +287,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
           </div>
         )}
 
-        {/* Ujuzi wa Kipaji (God-given Skills) */}
+        {/* KAZI ZILIZOFANIKIWA (Successful Past Projects / Portfolio) */}
         {isRegistering && isFundi && (
-          <div className="bg-amber-950/20 border border-amber-500/30 p-3.5 rounded-2xl space-y-2 mt-2">
-            <label className="block font-bold text-amber-300 flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              <span>Ujuzi wa Kipaji (God-given Skills)</span>
+          <div className="bg-emerald-950/20 border border-emerald-500/30 p-3.5 rounded-2xl space-y-2 mt-2">
+            <label className="block font-bold text-emerald-300 flex items-center gap-1.5">
+              <FolderOpen className="w-4 h-4 text-emerald-400" />
+              <span>Kazi Halisi Ulizofanikiwa (Past Projects / Portfolio)</span>
             </label>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Kutaja kazi za kweli ulizofanya kunamshawishi mteja kukuchagua haraka. Mfumo unaweza kuzihakiki.
+            </p>
             <textarea
               rows={2}
-              placeholder="Mfano: Nina uwezo mkubwa wa kufanya Micro-soldering ya Motherboard..."
-              value={formData.godGivenSkills}
-              onChange={(e) => setFormData({ ...formData, godGivenSkills: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-400 transition-colors"
+              placeholder="Mfano: Nimefunga kamera 16 kwenye benki X; Nimeunda mfumo wa kulipa shule Y..."
+              value={formData.pastProjects}
+              onChange={(e) => setFormData({ ...formData, pastProjects: e.target.value })}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-emerald-400 transition-colors"
             />
           </div>
         )}
@@ -294,15 +351,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ role, categoryName, onLogi
           type="submit"
           className="w-full bg-teal-500 hover:bg-teal-400 text-slate-950 font-black py-3 rounded-xl shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 transition-all flex items-center justify-center gap-2 mt-4 active:scale-95"
         >
-          <span>{isRegistering ? (isFundi ? 'Sajili Mtaalamu na Kituo Chake' : 'Kamilisha Usajili') : 'Ingia Kwenye Mfumo'}</span>
+          <span>{isRegistering ? (isFundi ? 'Kamilisha Usajili wa Mtaalamu' : 'Kamilisha Usajili') : 'Ingia Kwenye Mfumo'}</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </form>
 
       {/* Taarifa ya Ulinzi */}
-      <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-center gap-1.5 text-[10px] text-slate-500">
-        <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
-        <span>Taarifa za mtaalamu zinatumika kwenye Live Tracking ya Mteja</span>
+      <div className="mt-6 pt-4 border-t border-slate-800/80 flex flex-col items-center justify-center gap-1 text-[10px] text-slate-500 text-center">
+        <div className="flex items-center gap-1.5">
+          <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
+          <span>Wasifu wako unakaguliwa na TechAssistTZ kuthibitisha uhalali</span>
+        </div>
       </div>
 
     </div>
