@@ -4,22 +4,20 @@ import {
   Wrench, 
   User, 
   ShieldAlert, 
-  PhoneCall
+  PhoneCall,
+  LogOut
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const { 
     role, 
     setRole, 
-    activeFundiId, 
-    setActiveFundiId, 
-    technicians, 
     tickets, 
     currentUserSession,
     logoutUser
   } = useApp();
 
-  // Njia ya siri (Secret clicks counter) ya Superadmin
+  // Njia ya siri ya Superadmin (Triple click kwenye logo)
   const [clickCount, setClickCount] = useState(0);
 
   const handleSecretSuperadminClick = () => {
@@ -41,7 +39,6 @@ export const Header: React.FC = () => {
     }
   };
 
-  const currentFundi = technicians.find((t) => t.id === activeFundiId) || technicians[0];
   const activeTicketsCount = tickets.filter(
     (t) => t.status === 'PAID_WAITING_DISPATCH' || t.status === 'EN_ROUTE' || t.status === 'ARRIVED' || t.status === 'IN_PROGRESS'
   ).length;
@@ -105,41 +102,40 @@ export const Header: React.FC = () => {
               <span>Mteja</span>
             </button>
 
-            <button
-              onClick={() => setRole('fundi')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
-                role === 'fundi'
-                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30 font-bold scale-[1.02]'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-              }`}
-            >
-              <Wrench className="w-3.5 h-3.5" />
-              <span>Mtaalamu</span>
-              {currentFundi.isExpelled ? (
-                <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-              ) : currentFundi.consecutiveMissedCalls > 0 ? (
-                <span className="px-1.5 py-0.2 rounded text-[10px] bg-red-950 text-red-300 font-bold border border-red-700">
-                  {currentFundi.consecutiveMissedCalls}/3
-                </span>
-              ) : null}
-            </button>
+            {/* Kitufe cha Mtaalamu / Fundi: Kinaonekana TU kama ameingia kwenye akaunti */}
+            {currentUserSession && currentUserSession.role === 'fundi' && (
+              <button
+                onClick={() => setRole('fundi')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                  role === 'fundi'
+                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30 font-bold scale-[1.02]'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                }`}
+              >
+                <Wrench className="w-3.5 h-3.5" />
+                <span>Mtaalamu</span>
+              </button>
+            )}
 
-            <button
-              onClick={() => setRole('admin')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
-                role === 'admin'
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-1 ring-blue-400/40 font-bold scale-[1.02]'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-              }`}
-            >
-              <ShieldAlert className="w-3.5 h-3.5" />
-              <span>Admin & Escrow</span>
-              {activeTicketsCount > 0 && (
-                <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-blue-400 text-slate-950 font-bold">
-                  {activeTicketsCount}
-                </span>
-              )}
-            </button>
+            {/* Kitufe cha Admin & Escrow: Kinaonekana TU kama admin ameingia */}
+            {currentUserSession && currentUserSession.role === 'admin' && (
+              <button
+                onClick={() => setRole('admin')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                  role === 'admin'
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-1 ring-blue-400/40 font-bold scale-[1.02]'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                }`}
+              >
+                <ShieldAlert className="w-3.5 h-3.5" />
+                <span>Admin & Escrow</span>
+                {activeTicketsCount > 0 && (
+                  <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-blue-400 text-slate-950 font-bold">
+                    {activeTicketsCount}
+                  </span>
+                )}
+              </button>
+            )}
           </div>
 
           {/* User Session Info / Action Button */}
@@ -152,12 +148,20 @@ export const Header: React.FC = () => {
                 <div className="text-xs font-bold text-white max-w-[120px] truncate leading-tight">
                   {currentUserSession.name}
                 </div>
+                <div className="text-[9px] text-amber-400 font-medium truncate max-w-[120px]">
+                  {currentUserSession.category}
+                </div>
               </div>
               <button
-                onClick={logoutUser}
-                className="px-2 py-0.5 text-[10px] font-semibold text-slate-400 hover:text-red-400 hover:bg-slate-700/50 rounded-lg transition-colors"
+                onClick={() => {
+                  logoutUser();
+                  setRole('landing');
+                }}
+                className="px-2 py-1 text-[10px] font-semibold text-slate-400 hover:text-red-400 hover:bg-slate-700/50 rounded-lg transition-colors flex items-center gap-1"
+                title="Toka kwenye akaunti"
               >
-                Toka
+                <LogOut className="w-3 h-3" />
+                <span>Toka</span>
               </button>
             </div>
           ) : (
