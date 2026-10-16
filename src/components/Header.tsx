@@ -32,10 +32,19 @@ export const Header: React.FC = () => {
 
   // Uelekezo salama wa kitufe cha Mteja
   const handleCustomerNavigation = () => {
-    if (currentUserSession) {
+    if (currentUserSession && currentUserSession.role === 'mteja') {
       setRole('mteja');
     } else {
       setRole('landing'); // Mpeleke kwenye Landing Page ili achague kategoria na kuingia kwanza
+    }
+  };
+
+  // Uelekezo salama wa kitufe cha Mtaalamu (Fundi)
+  const handleFundiNavigation = () => {
+    if (currentUserSession && currentUserSession.role === 'fundi') {
+      setRole('fundi');
+    } else {
+      setRole('landing'); // Mpeleke kwenye Landing Page ili achague kundi la Watoa Huduma na kuingia
     }
   };
 
@@ -103,22 +112,20 @@ export const Header: React.FC = () => {
               <span>Mteja</span>
             </button>
 
-            {/* Kitufe cha Mtaalamu / Fundi (Kinaonekana TU kama amelogin) */}
-            {currentUserSession && currentUserSession.role === 'fundi' && (
-              <button
-                onClick={() => setRole('fundi')}
-                className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
-                  role === 'fundi'
-                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30 font-bold scale-[1.02]'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-                }`}
-              >
-                <Wrench className="w-3.5 h-3.5" />
-                <span>Mtaalamu</span>
-              </button>
-            )}
+            {/* Kitufe cha Mtaalamu / Fundi Kimerudishwa muda wote */}
+            <button
+              onClick={handleFundiNavigation}
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                role === 'fundi'
+                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30 font-bold scale-[1.02]'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+              }`}
+            >
+              <Wrench className="w-3.5 h-3.5" />
+              <span>Mtaalamu</span>
+            </button>
 
-            {/* Kitufe cha Admin & Escrow (Kinaonekana TU kama admin amelogin) */}
+            {/* Kitufe cha Admin & Escrow (Kinaonekana TU kama admin amelogin ili kuficha usimamizi) */}
             {currentUserSession && currentUserSession.role === 'admin' && (
               <button
                 onClick={() => setRole('admin')}
