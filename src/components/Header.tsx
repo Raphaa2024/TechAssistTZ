@@ -5,11 +5,8 @@ import {
   User, 
   ShieldAlert, 
   RotateCcw, 
-  Clock, 
-  CheckCircle2, 
-  AlertTriangle,
-  Radio,
-  PhoneCall
+  FlaskConical,
+  FolderTree
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -31,35 +28,30 @@ export const Header: React.FC = () => {
   ).length;
 
   return (
-    <header className="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-40 shadow-xl">
+    <header className="bg-slate-900/95 border-b border-slate-800 text-white sticky top-0 z-50 shadow-2xl backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between py-3 gap-3">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between py-2.5 gap-3">
           
-          {/* Logo & Platform Info */}
+          {/* Logo & Brand Info (Spana Juu Katikati ya Jina) */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-amber-500/20 text-slate-950 font-black">
-                <Wrench className="w-5 h-5 text-slate-950" />
+            <div 
+              onClick={() => setRole('landing')}
+              className="flex flex-col items-center justify-center cursor-pointer group py-1 select-none"
+            >
+              <div className="bg-gradient-to-tr from-amber-500 via-teal-500 to-emerald-400 p-2.5 rounded-2xl shadow-lg shadow-teal-500/20 group-hover:scale-110 group-hover:shadow-teal-500/40 transition-all duration-300 mb-1 border border-teal-400/30">
+                <Wrench className="w-6 h-6 text-slate-950 font-black" />
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold tracking-tight text-white">Tech<span className="text-amber-400">Assist</span>TZ</span>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                    WAMP & Expo
-                  </span>
-                </div>
-                <p className="text-xs text-slate-400">
-                  C:\wamp64\www\TechAssistTZ • REST API & Escrow
-                </p>
-              </div>
+              <span className="text-xl md:text-2xl font-black text-white tracking-tight group-hover:text-teal-400 transition-colors leading-none">
+                Tech<span className="text-amber-400">Assist</span><span className="text-teal-400">TZ</span>
+              </span>
             </div>
 
-            {/* Mobile Reset & Badge */}
+            {/* Mobile Reset Button */}
             <div className="flex md:hidden items-center gap-2">
               <button
                 onClick={resetDemoData}
                 title="Weka upya mfumo"
-                className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white"
+                className="p-2 rounded-xl bg-slate-800/80 text-slate-400 hover:text-white border border-slate-700 active:scale-95 transition-all"
               >
                 <RotateCcw className="w-4 h-4" />
               </button>
@@ -67,24 +59,24 @@ export const Header: React.FC = () => {
           </div>
 
           {/* Role Navigation Bar */}
-          <div className="flex flex-wrap items-center gap-1.5 bg-slate-950/70 p-1.5 rounded-xl border border-slate-800">
+          <div className="flex flex-wrap items-center justify-center gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl border border-slate-800/80 shadow-inner">
             <button
               onClick={() => setRole('landing')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'landing'
-                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30 font-bold'
+                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30 font-bold scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
               }`}
             >
               <span>🏠</span>
-              <span>Mwanzo & Usajili</span>
+              <span>Mwanzo</span>
             </button>
 
             <button
               onClick={() => setRole('ai_chat')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'ai_chat'
-                  ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30 ring-1 ring-purple-400 font-bold'
+                  ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30 ring-1 ring-purple-400 font-bold scale-[1.02]'
                   : 'text-purple-300 hover:text-white hover:bg-slate-800/60 bg-purple-950/30 border border-purple-500/30'
               }`}
             >
@@ -94,9 +86,9 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setRole('mteja')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'mteja'
-                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 ring-1 ring-emerald-400/40 font-bold'
+                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 ring-1 ring-emerald-400/40 font-bold scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
               }`}
             >
@@ -106,14 +98,14 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setRole('fundi')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'fundi'
-                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30 font-bold'
+                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30 font-bold scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
               }`}
             >
               <Wrench className="w-3.5 h-3.5" />
-              <span>Mtaalamu TEHAMA</span>
+              <span>Mtaalamu</span>
               {currentFundi.isExpelled ? (
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
               ) : currentFundi.consecutiveMissedCalls > 0 ? (
@@ -125,9 +117,9 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setRole('admin')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'admin'
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-1 ring-blue-400/40 font-bold'
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-1 ring-blue-400/40 font-bold scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
               }`}
             >
@@ -142,43 +134,39 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setRole('tests')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all relative ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 relative ${
                 role === 'tests'
-                  ? 'bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-400/40 font-black ring-2 ring-emerald-200'
+                  ? 'bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-400/40 font-black ring-2 ring-emerald-200 scale-[1.02]'
                   : 'text-emerald-300 hover:text-white bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-500/50 shadow-sm'
               }`}
-              title="Fungua Dashibodi ya Majaribio (backend/src/tests/run_tests.js)"
+              title="Fungua Dashibodi ya Majaribio"
             >
-              <span className="flex h-2 w-2 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-              </span>
-              <span>🧪 PIMA MFUMO (TESTS)</span>
+              <FlaskConical className="w-3.5 h-3.5" />
+              <span>🧪 PIMA MFUMO</span>
             </button>
 
             <button
               onClick={() => setRole('architecture')}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 role === 'architecture'
-                  ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30 ring-1 ring-purple-400/40'
+                  ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30 ring-1 ring-purple-400/40 scale-[1.02]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
               }`}
               title="C:\wamp64\www\TechAssistTZ"
             >
-              <span>📂</span>
-              <span className="hidden xl:inline">C:\wamp64</span>
+              <FolderTree className="w-3.5 h-3.5 text-purple-400" />
             </button>
           </div>
 
-          {/* Fundi Selector & Status (Visible when role is 'fundi') */}
-          <div className="flex items-center gap-3">
-            {role === 'fundi' ? (
+          {/* User Session / Fundi Selector / Actions */}
+          <div className="flex items-center justify-end gap-3">
+            {role === 'fundi' && (
               <div className="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700">
-                <span className="text-[11px] text-slate-400">Login kama:</span>
+                <span className="text-[11px] text-slate-400 hidden sm:inline">Akaunti:</span>
                 <select
                   value={activeFundiId}
                   onChange={(e) => setActiveFundiId(e.target.value)}
-                  className="bg-slate-900 text-white text-xs font-semibold rounded-lg px-2.5 py-1 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                  className="bg-slate-900 text-white text-xs font-semibold rounded-lg px-2 py-1 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-400"
                 >
                   {technicians.map((tech) => (
                     <option key={tech.id} value={tech.id}>
@@ -187,35 +175,35 @@ export const Header: React.FC = () => {
                   ))}
                 </select>
               </div>
-            ) : null}
+            )}
 
-            {currentUserSession ? (
+            {currentUserSession && (
               <div className="flex items-center gap-2 bg-slate-800/90 px-3 py-1.5 rounded-xl border border-slate-700 shadow-sm">
                 <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-amber-500/20 to-emerald-500/20 border border-emerald-500/40 text-emerald-300 flex items-center justify-center text-xs font-black">
                   {currentUserSession.name.charAt(0).toUpperCase()}
                 </div>
                 <div className="text-left hidden sm:block">
-                  <div className="text-xs font-bold text-white max-w-[140px] truncate">
+                  <div className="text-xs font-bold text-white max-w-[120px] truncate leading-tight">
                     {currentUserSession.name}
                   </div>
-                  <div className="text-[10px] text-amber-400 font-semibold truncate max-w-[140px]">
+                  <div className="text-[10px] text-amber-400 font-semibold truncate max-w-[120px]">
                     {currentUserSession.category}
                   </div>
                 </div>
                 <button
                   onClick={logoutUser}
-                  className="px-2 py-1 text-[11px] font-semibold text-slate-400 hover:text-red-400 hover:bg-slate-700/50 rounded transition-colors"
+                  className="px-2 py-1 text-[11px] font-semibold text-slate-400 hover:text-red-400 hover:bg-slate-700/50 rounded-lg transition-colors"
                   title="Toka kwenye akaunti"
                 >
                   Toka
                 </button>
               </div>
-            ) : null}
+            )}
 
             <button
               onClick={resetDemoData}
               title="Rejesha mfumo katika hali ya awali ya majaribio"
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors border border-slate-700"
+              className="hidden md:flex items-center gap-1.5 px-3 py-2 text-xs text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition-all border border-slate-700 active:scale-95"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Weka Upya</span>
