@@ -1,0 +1,6 @@
+{
+  "name": "FundiLink - Mfumo wa Mafundi na Ufuatiliaji wa Tiketi",
+  "description": "Mfumo kamili wa kuunganisha mafundi na wateja wenye ufuatiliaji wa moja kwa moja, malipo ya kampuni, makadirio ya umbali, na kanuni ya miito mitatu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
