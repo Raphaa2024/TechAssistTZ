@@ -13,10 +13,14 @@ import {
   Landmark,
   FileText,
   BadgeCheck,
-  UserX
+  UserX,
+  ScrollText,
+  Receipt,
+  Download,
+  History
 } from 'lucide-react';
 
-type AdminTab = 'DASHBOARD' | 'KYC_VERIFICATION' | 'DISPUTES';
+type AdminTab = 'DASHBOARD' | 'KYC_VERIFICATION' | 'DISPUTES' | 'RECORDS';
 
 export const AdminPortal: React.FC = () => {
   const { tickets, technicians, setRole } = useApp();
@@ -53,17 +57,17 @@ export const AdminPortal: React.FC = () => {
   }, [tickets]);
 
   // CHUJA WATAALAMU AMBAO HAWAJATHIBITISHWA (KYC PENDING)
-  // Kwa mfumo huu tuna-assume mafundi ambao hawana "isVerified" kwenye DB ni wapya
   const unverifiedTechs = technicians.filter(t => !t.isExpelled && t.rating === 0);
+
+  // TIKETI ZILIZOKAMILIKA KWA AJILI YA KUMBUKUMBU (RECORDS)
+  const completedTickets = tickets.filter(t => t.status === 'COMPLETED');
 
   const handleVerifyTech = (techId: string) => {
     alert(`Mtaalamu amehakikiwa na kupewa Tiki ya Kijani kikamilifu! Sasa ataonekana kwa wateja.`);
-    // Hapa utaweka logic ya backend kuidhinisha: updateTechnician(techId, { isVerified: true })
   };
 
   const handleRejectTech = (techId: string) => {
     alert(`Mtaalamu amekataliwa. Mfumo utamtumia SMS ya kurekebisha taarifa zake.`);
-    // Hapa utaweka logic ya kumkataa
   };
 
   return (
@@ -83,14 +87,22 @@ export const AdminPortal: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex bg-slate-950 p-1.5 rounded-2xl border border-slate-800 text-xs font-bold shadow-inner w-full md:w-auto overflow-x-auto">
+        <div className="flex bg-slate-950 p-1.5 rounded-2xl border border-slate-800 text-xs font-bold shadow-inner w-full md:w-auto overflow-x-auto custom-scrollbar">
           <button
             onClick={() => setActiveTab('DASHBOARD')}
             className={`px-4 py-2.5 rounded-xl transition-all whitespace-nowrap flex items-center gap-2 ${
               activeTab === 'DASHBOARD' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Wallet className="w-4 h-4" /> Escrow & Fedha
+            <Wallet className="w-4 h-4" /> Escrow
+          </button>
+          <button
+            onClick={() => setActiveTab('RECORDS')}
+            className={`px-4 py-2.5 rounded-xl transition-all whitespace-nowrap flex items-center gap-2 ${
+              activeTab === 'RECORDS' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <ScrollText className="w-4 h-4" /> Kumbukumbu
           </button>
           <button
             onClick={() => setActiveTab('KYC_VERIFICATION')}
@@ -121,8 +133,6 @@ export const AdminPortal: React.FC = () => {
         <div className="space-y-6">
           {/* VIBUKU VYA FEDHA (FINANCIAL CARDS) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            
-            {/* Escrow Held */}
             <div className="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <ShieldCheck className="w-16 h-16 text-blue-400" />
@@ -130,43 +140,38 @@ export const AdminPortal: React.FC = () => {
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Fedha Kwenye Escrow</p>
               <h3 className="text-2xl font-black text-white font-mono">TZS {financialStats.escrowHeld.toLocaleString()}</h3>
               <p className="text-[10px] text-blue-400 mt-2 flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" /> Pesa hizi zinasubiri kazi zikamilike
+                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" /> Zinasubiri kazi zikamilike
               </p>
             </div>
 
-            {/* Platform Revenue */}
             <div className="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <DollarSign className="w-16 h-16 text-emerald-400" />
               </div>
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Mapato ya Mfumo (15%)</p>
               <h3 className="text-2xl font-black text-emerald-400 font-mono">TZS {financialStats.platformRevenue.toLocaleString(undefined, {maximumFractionDigits: 0})}</h3>
-              <p className="text-[10px] text-emerald-500 mt-2">Makato halisi ya TechAssistTZ (Net)</p>
+              <p className="text-[10px] text-emerald-500 mt-2">Makato halisi ya TechAssistTZ</p>
             </div>
 
-            {/* VAT Collected */}
             <div className="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <Landmark className="w-16 h-16 text-amber-400" />
               </div>
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Kodi Inayosubiriwa TRA (18%)</p>
               <h3 className="text-2xl font-black text-amber-400 font-mono">TZS {financialStats.vatCollected.toLocaleString(undefined, {maximumFractionDigits: 0})}</h3>
-              <p className="text-[10px] text-amber-500 mt-2">VAT iliyokusanywa kutoka kwa wateja</p>
+              <p className="text-[10px] text-amber-500 mt-2">VAT iliyokusanywa (Payable)</p>
             </div>
 
-            {/* Total Payouts */}
             <div className="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <Wallet className="w-16 h-16 text-purple-400" />
               </div>
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Malipo ya Wataalamu (85%)</p>
               <h3 className="text-2xl font-black text-white font-mono">TZS {financialStats.totalPayouts.toLocaleString(undefined, {maximumFractionDigits: 0})}</h3>
-              <p className="text-[10px] text-purple-400 mt-2">Pesa zilizolipwa kwa mafundi (Payouts)</p>
+              <p className="text-[10px] text-purple-400 mt-2">Pesa zilizolipwa kwa mafundi</p>
             </div>
-
           </div>
 
-          {/* Orodha ya Tiketi Kwenye Escrow (Recent Escrow Transactions) */}
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl">
             <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
               <FileText className="w-4 h-4 text-slate-400" /> Muamala ya Hivi Karibuni ya Escrow
@@ -179,7 +184,7 @@ export const AdminPortal: React.FC = () => {
                     <th className="p-3 rounded-tl-xl">Token</th>
                     <th className="p-3">Mteja & Fundi</th>
                     <th className="p-3">Kiasi Kamili (VAT Incl.)</th>
-                    <th className="p-3">Hali ya Pesa (Escrow)</th>
+                    <th className="p-3">Hali ya Pesa</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/60">
@@ -188,7 +193,7 @@ export const AdminPortal: React.FC = () => {
                       <td className="p-3 font-mono font-bold text-amber-400">{t.tokenNumber}</td>
                       <td className="p-3">
                         <div className="font-bold text-white">{t.customerName}</div>
-                        <div className="text-[10px] text-slate-500">Kuelekea kwa: {t.technicianName}</div>
+                        <div className="text-[10px] text-slate-500">Fundi: {t.technicianName}</div>
                       </td>
                       <td className="p-3 font-mono text-emerald-400 font-bold">
                         TZS {t.totalAmount.toLocaleString()}
@@ -207,6 +212,111 @@ export const AdminPortal: React.FC = () => {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ----------------- TAB: RECORDS (RECEIPTS & PAYOUTS) ----------------- */}
+      {activeTab === 'RECORDS' && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            {/* Orodha ya Ankara za Wateja (Customer Receipts) */}
+            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <Receipt className="w-5 h-5 text-emerald-400" /> Ankara za Wateja (Receipts)
+                </h3>
+              </div>
+              <p className="text-[11px] text-slate-400 mb-4 leading-relaxed">
+                Kumbukumbu za risiti zote za wateja waliolipia huduma kupitia mfumo. Risiti hizi zinajumuisha 18% VAT kwa ajili ya mamlaka (TRA).
+              </p>
+
+              {completedTickets.length === 0 ? (
+                <div className="text-center py-8 text-slate-500 text-xs bg-slate-950 rounded-xl border border-slate-800">
+                  Hakuna ankara zilizokamilika kwa sasa.
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs text-slate-300">
+                    <thead className="bg-slate-950/50 text-slate-500 uppercase font-bold text-[10px] border-b border-slate-800">
+                      <tr>
+                        <th className="p-3 rounded-tl-xl">Ankara No.</th>
+                        <th className="p-3">Mteja</th>
+                        <th className="p-3">Jumla (TZS)</th>
+                        <th className="p-3 rounded-tr-xl">Pakua</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800/60">
+                      {completedTickets.map(t => (
+                        <tr key={t.id} className="hover:bg-slate-800/30 transition-colors">
+                          <td className="p-3 font-mono text-emerald-400">{t.invoice?.invoiceNumber || `INV-${t.tokenNumber}`}</td>
+                          <td className="p-3 font-bold text-white">{t.customerName}</td>
+                          <td className="p-3 font-mono">{t.totalAmount.toLocaleString()}</td>
+                          <td className="p-3">
+                            <button className="p-1.5 bg-slate-800 hover:bg-emerald-600 rounded-lg text-slate-300 hover:text-white transition-colors" title="Pakua Ankara (PDF)">
+                              <Download className="w-3.5 h-3.5" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
+            {/* Orodha ya Malipo ya Mafundi (Technician Payouts) */}
+            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <History className="w-5 h-5 text-purple-400" /> Malipo ya Wataalamu (Payouts)
+                </h3>
+              </div>
+              <p className="text-[11px] text-slate-400 mb-4 leading-relaxed">
+                Kumbukumbu za pesa zilizotumwa kwa wataalamu baada ya kazi kukamilika na mteja kuridhika (Hiki ni kiasi cha 85% baada ya makato).
+              </p>
+
+              {completedTickets.length === 0 ? (
+                <div className="text-center py-8 text-slate-500 text-xs bg-slate-950 rounded-xl border border-slate-800">
+                  Hakuna malipo yaliyofanyika kwa wataalamu bado.
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs text-slate-300">
+                    <thead className="bg-slate-950/50 text-slate-500 uppercase font-bold text-[10px] border-b border-slate-800">
+                      <tr>
+                        <th className="p-3 rounded-tl-xl">Token</th>
+                        <th className="p-3">Mtaalamu</th>
+                        <th className="p-3">Pesa Iliyotumwa</th>
+                        <th className="p-3 rounded-tr-xl">Hali</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800/60">
+                      {completedTickets.map(t => {
+                        const vat = t.totalAmount - (t.totalAmount / 1.18);
+                        const subtotal = t.totalAmount - vat;
+                        const payout = subtotal * 0.85;
+
+                        return (
+                          <tr key={t.id} className="hover:bg-slate-800/30 transition-colors">
+                            <td className="p-3 font-mono text-slate-400">{t.tokenNumber}</td>
+                            <td className="p-3 font-bold text-white">{t.technicianName}</td>
+                            <td className="p-3 font-mono text-purple-400 font-bold">TZS {payout.toLocaleString(undefined, {maximumFractionDigits:0})}</td>
+                            <td className="p-3">
+                              <span className="flex items-center gap-1 text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full w-max border border-emerald-500/20">
+                                <CheckCircle className="w-3 h-3" /> Imelipwa
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
           </div>
         </div>
       )}
@@ -236,7 +346,6 @@ export const AdminPortal: React.FC = () => {
                   {/* Photo & Basic Info */}
                   <div className="p-5 border-b border-slate-800 flex gap-4 bg-slate-950/40">
                     <div className="w-20 h-20 rounded-2xl bg-slate-800 border-2 border-slate-700 flex items-center justify-center shrink-0 overflow-hidden relative group cursor-pointer">
-                      {/* Tukiwa na picha halisi itaonekana hapa, kwa sasa tunaweka placeholder */}
                       <span className="text-3xl">👨‍🔧</span>
                       <div className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <Eye className="w-5 h-5 text-white" />
