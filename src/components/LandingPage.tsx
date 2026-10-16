@@ -38,7 +38,7 @@ export function LandingPage() {
 
   const staffCategories = [
     { id: 'FUNDI', name: 'Mtaalamu (Fundi)', icon: <Wrench className="w-5 h-5 sm:w-6 sm:h-6" />, desc: 'Wahandisi na Mafundi wa TEHAMA' },
-    { id: 'ADMIN', name: 'Msimamizi (Admin)', icon: <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" />, desc: 'Usimamizi wa Mfumo na Escrow' },
+    { id: 'ADMIN', name: 'Msimamizi (Admin)', icon: <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" />, desc: 'Usimamizi wa Mfumo na SafePay' },
   ];
 
   return (
@@ -73,7 +73,7 @@ export function LandingPage() {
           Mfumo wa Usaidizi wa Haraka wa TEHAMA
         </h2>
         <p className="text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed max-w-2xl mx-auto px-2">
-          Mfumo wa kitaalamu unaounganisha Taasisi, Mashule, Nyumba za Ibada na Raia na wataalamu waliothibitishwa kwa kutumia teknolojia ya AI na usalama wa Escrow.
+          Mfumo wa kitaalamu unaounganisha Taasisi, Mashule, Nyumba za Ibada na Raia na wataalamu waliothibitishwa kwa kutumia teknolojia ya AI na usalama wa SafePay.
         </p>
       </div>
       
