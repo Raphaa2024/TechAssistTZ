@@ -142,7 +142,7 @@ export const Header: React.FC = () => {
               <span>Mtaalamu</span>
             </button>
 
-            {currentUserSession && currentUserSession.role === 'admin' && (
+            {(role === 'admin' || (currentUserSession && currentUserSession.role === 'admin')) && (
               <button
                 onClick={() => setRole('admin')}
                 className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
@@ -151,8 +151,8 @@ export const Header: React.FC = () => {
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
                 }`}
               >
-                <ShieldAlert className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Admin & Escrow</span>
+                <ShieldAlert className="w-3.5 h-3.5 text-blue-400" />
+                <span className="hidden sm:inline">Admin & SafePay</span>
                 {activeTicketsCount > 0 && (
                   <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-blue-400 text-slate-950 font-bold">
                     {activeTicketsCount}
